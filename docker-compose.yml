@@ -1,0 +1,77 @@
+# Local development stack: Postgres + FastAPI backend (:8000) + Next.js frontend (:3000).
+# Compatible with both `docker compose up` (v2 plugin) and `docker-compose up` (v1).
+# The top-level `version` is obsolete under v2 (harmless warning) but required by v1.
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vedi
+      POSTGRES_PASSWORD: vedi
+      POSTGRES_DB: vedi
+    ports:
+      - "${POSTGRES_HOST_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vedi -d vedi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    # The container reaches Postgres at host `db` (compose network).
+    environment:
+      DATABASE_URL: postgresql+psycopg2://vedi:vedi@db:5432/vedi
+      JWT_SECRET: ${JWT_SECRET:-dev-access-secret-change-me}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-refresh-secret-change-me}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_ACCESS_TTL_MIN: ${JWT_ACCESS_TTL_MIN:-30}
+      JWT_REFRESH_TTL_DAYS: ${JWT_REFRESH_TTL_DAYS:-7}
+      SELLER_EMAIL: ${SELLER_EMAIL:-seller@vedicollections.example}
+      SELLER_PASSWORD: ${SELLER_PASSWORD:-change-me-please}
+      SELLER_WHATSAPP_NUMBER: ${SELLER_WHATSAPP_NUMBER:-919999999999}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
+      # Phase 2+/4 secrets are optional in Phase 1; pass through if set.
+      META_ACCESS_TOKEN: ${META_ACCESS_TOKEN:-}
+      META_CATALOG_ID: ${META_CATALOG_ID:-}
+      META_GRAPH_API_VERSION: ${META_GRAPH_API_VERSION:-v21.0}
+      META_GRAPH_API_BASE_URL: ${META_GRAPH_API_BASE_URL:-https://graph.facebook.com}
+      CATALOG_SYNC_INTERVAL_MINUTES: ${CATALOG_SYNC_INTERVAL_MINUTES:-30}
+      CATALOG_SYNC_SCHEDULER_ENABLED: ${CATALOG_SYNC_SCHEDULER_ENABLED:-false}
+      STORAGE_ENDPOINT: ${STORAGE_ENDPOINT:-}
+      STORAGE_REGION: ${STORAGE_REGION:-ap-south-1}
+      STORAGE_BUCKET: ${STORAGE_BUCKET:-}
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY:-}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY:-}
+      STORAGE_PUBLIC_BASE_URL: ${STORAGE_PUBLIC_BASE_URL:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      # Seed/utility scripts live at repo root; expose them for `exec` convenience.
+      - ./scripts:/scripts
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    environment:
+      # Browser-visible; defaults to the host-mapped backend port.
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      NEXT_PUBLIC_SELLER_WHATSAPP_NUMBER: ${NEXT_PUBLIC_SELLER_WHATSAPP_NUMBER:-919876543210}
+      # Enable file-watching hot reload inside the container.
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      # Keep container's node_modules; don't let the host bind-mount clobber it.
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

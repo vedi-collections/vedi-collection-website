@@ -1,0 +1,21 @@
+[project]
+name = "vedi-collections-backend"
+version = "0.1.0"
+description = "Vedi Collections backend (FastAPI)"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, isort, bugbear, pyupgrade.
+select = ["E", "F", "I", "B", "UP"]
+# FastAPI dependency injection intentionally calls Depends in defaults.
+ignore = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", ".."]
+addopts = "-q"

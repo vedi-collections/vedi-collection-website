@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────────────────
+   THEME TOKENS — single source of truth for the palette.
+   To re-skin the whole site, change the values in this :root block. Values are
+   space-separated RGB channels (R G B) so Tailwind opacity modifiers work; they
+   are referenced through the semantic tokens in tailwind.config.ts (bg-primary,
+   text-muted, border-line, …) — never raw hex in components.
+   The defaults below are the original maroon / gold / cream "boutique" palette,
+   so nothing changes visually until a new palette is chosen.
+   Add alternate presets as :root[data-theme="..."] and flip <html data-theme>.
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --color-bg: 250 245 236; /* #faf5ec cream */
+  --color-surface: 255 253 247; /* #fffdf7 */
+  --color-surface-alt: 246 238 222; /* #f6eede */
+  --color-border: 234 223 201; /* #eadfc9 */
+
+  --color-primary: 87 27 44; /* #571b2c maroon */
+  --color-primary-hover: 110 33 56; /* #6e2138 */
+  --color-primary-dark: 62 15 30; /* #3e0f1e */
+  --color-primary-fg: 250 241 220; /* #faf1dc */
+
+  --color-accent: 185 138 60; /* #b98a3c gold */
+  --color-accent-light: 216 179 106; /* #d8b36a */
+  --color-accent-pale: 235 217 168; /* #ebd9a8 */
+
+  --color-heading: 62 18 32; /* #3e1220 */
+  --color-text: 43 22 30; /* #2b161e */
+  --color-muted: 107 74 83; /* #6b4a53 */
+  --color-muted-soft: 154 126 133; /* #9a7e85 */
+  --color-muted-strike: 181 156 163; /* #b59ca3 strikethrough MRP */
+
+  --color-framebg: 239 230 213; /* #efe6d5 outer page bg behind the column */
+  --color-info: 243 234 215; /* #f3ead7 info-box / soft tag bg */
+
+  --color-whatsapp: 31 168 85; /* #1fa855 */
+  --color-whatsapp-dark: 22 112 58; /* #16703a */
+  --color-whatsapp-fg: 255 255 255; /* #ffffff */
+
+  --color-badge-bg: 87 27 44; /* #571b2c */
+  --color-badge-fg: 235 217 168; /* #ebd9a8 */
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    background: rgb(var(--color-bg));
+  }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    background: rgb(var(--color-bg));
+    color: rgb(var(--color-text));
+    font-family: var(--font-karla), Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-cormorant), Georgia, serif;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid rgb(var(--color-accent));
+    outline-offset: 3px;
+  }
+  /* Set when a drawer/modal is open to stop the page scrolling behind it. */
+  body.is-locked {
+    overflow: hidden;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbars on horizontal scroll rails (carousels, chip rows). */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

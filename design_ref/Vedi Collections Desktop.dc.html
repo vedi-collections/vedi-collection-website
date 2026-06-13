@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: #F3ECDD; }
+    * { box-sizing: border-box; }
+    button { font-family: inherit; }
+    @keyframes vcUp { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes vcRight { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes vcFade { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</helmet>
+
+<div data-screen-label="Store — Laptop" style="min-height: 100vh; background: #FAF5EC; font-family: 'Karla', sans-serif; color: #2B161E;">
+
+  <!-- Announcement bar -->
+  <div style="background: #4A1322; color: #EBD9A8; font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; text-align: center; padding: 9px 24px;">Free shipping pan-India above ₹1,999 · COD &amp; UPI accepted</div>
+
+  <!-- Header -->
+  <header style="position: sticky; top: 0; z-index: 20; background: rgba(250, 245, 236, 0.94); backdrop-filter: blur(10px); border-bottom: 1px solid #EADFC9;">
+    <div style="max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; gap: 32px;">
+      <div style="display: flex; flex-direction: column; line-height: 1; flex-shrink: 0;">
+        <span style="font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 28px; letter-spacing: 0.04em; color: #571B2C;">Vedi</span>
+        <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.36em; text-transform: uppercase; color: #B98A3C; margin-top: 2px;">Collections</span>
+      </div>
+      <nav style="display: flex; align-items: center; gap: 4px;">
+        <sc-for list="{{ mains }}" as="m" hint-placeholder-count="3">
+          <button onClick="{{ m.pick }}" style="border: none; cursor: pointer; border-radius: 999px; padding: 9px 18px; font-size: 14px; font-weight: 700; background: {{ m.bg }}; color: {{ m.fg }}; transition: background 0.15s ease;" style-hover="background: #F0E5CE;">{{ m.name }}</button>
+        </sc-for>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+        <a href="{{ waHelloHref }}" target="_blank" style="display: flex; align-items: center; gap: 8px; text-decoration: none; border: 1px solid #CDE5D2; background: #F0F8F1; border-radius: 999px; padding: 9px 16px; color: #16703A; font-size: 13px; font-weight: 700;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1FA855"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.1-.3 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.3 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"></path></svg>
+          Chat with us
+        </a>
+        <button onClick="{{ openCart }}" aria-label="Open bag" style="position: relative; display: flex; align-items: center; gap: 8px; border: 1px solid #E2D3B4; background: #FFFDF7; border-radius: 999px; padding: 9px 16px; color: #571B2C; font-size: 13px; font-weight: 700; cursor: pointer;" style-hover="background: #F7EFDC;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#571B2C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5L6 7z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>
+          Bag
+          <sc-if value="{{ hasCartCount }}" hint-placeholder-val="{{ false }}">
+            <span style="min-width: 19px; height: 19px; border-radius: 999px; background: #B98A3C; color: #FFFDF7; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 5px;">{{ cartCount }}</span>
+          </sc-if>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section style="max-width: 1280px; margin: 28px auto 8px; padding: 0 32px;">
+    <div style="border-radius: 20px; overflow: hidden; position: relative; display: grid; grid-template-columns: 1.1fr 1fr; background: linear-gradient(to top, rgba(185, 138, 60, 0.9) 0%, rgba(185, 138, 60, 0.9) 5%, rgba(0,0,0,0) 5.5%), repeating-linear-gradient(115deg, rgba(235, 217, 168, 0.05) 0px, rgba(235, 217, 168, 0.05) 2px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 16px), linear-gradient(140deg, #6E2138 8%, #3E0F1E 92%);">
+      <div style="padding: 56px 24px 64px 48px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 16px;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #D8B36A;">The Festive Edit ’26</span>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 52px; line-height: 1.08; color: #FAF1DC; margin: 0; max-width: 14ch; text-wrap: pretty;">Woven for the moments that matter</h1>
+        <p style="font-size: 16px; line-height: 1.6; color: rgba(250, 241, 220, 0.78); margin: 0; max-width: 38ch;">Suit sets for her, pant-shirt &amp; safari cloth for him — sourced direct from mills, priced honestly.</p>
+        <button onClick="{{ shopNow }}" style="background: #D8B36A; color: #3E0F1E; border: none; border-radius: 999px; padding: 14px 28px; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; margin-top: 6px;" style-hover="background: #E5C788;">Shop the edit</button>
+      </div>
+      <div style="position: relative; display: flex; align-items: center; justify-content: center; padding: 40px 48px 40px 0;">
+        <sc-for list="{{ featured }}" as="f" hint-placeholder-count="2">
+          <div onClick="{{ f.open }}" style="width: 200px; aspect-ratio: 3 / 4; border-radius: 14px; background: {{ f.bg }}; box-shadow: 0 18px 40px rgba(20, 5, 10, 0.45); cursor: pointer; position: relative; flex-shrink: 0; margin-left: {{ f.ml }}; transform: rotate({{ f.rot }}); transition: transform 0.2s ease;" style-hover="transform: rotate(0deg) translateY(-6px);">
+            <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 36px; color: {{ f.motif }};">✦</span>
+            <span style="position: absolute; bottom: 12px; left: 12px; right: 12px; background: rgba(250, 245, 236, 0.93); color: #3E1220; font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 8px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ f.name }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product grid -->
+  <section ref="{{ gridRef }}" style="max-width: 1280px; margin: 0 auto; padding: 36px 32px 8px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px;">
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 32px; color: #3E1220; margin: 0;">{{ gridTitle }}</h2>
+      <span style="font-size: 14px; color: #9A7E85;">{{ gridCount }}</span>
+    </div>
+    <sc-if value="{{ hasSubs }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap;">
+        <sc-for list="{{ subs }}" as="c" hint-placeholder-count="3">
+          <button onClick="{{ c.pick }}" style="border-radius: 999px; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; background: {{ c.bg }}; color: {{ c.fg }}; border: 1px solid {{ c.bd }};">{{ c.name }}{{ c.soonLabel }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ showComing }}" hint-placeholder-val="{{ false }}">
+      <div style="border: 1px dashed #D8C9A8; border-radius: 18px; background: #F7F0DF; padding: 56px 32px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 32px; color: #571B2C;">{{ comingTitle }} — coming soon</span>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #6B4A53; max-width: 44ch;">We’re curating this collection right now. Be the first to know when it arrives.</p>
+        <a href="{{ waSoonHref }}" target="_blank" style="margin-top: 8px; background: #1FA855; color: #FFFFFF; border-radius: 999px; padding: 13px 24px; font-size: 14px; font-weight: 700; text-decoration: none;">Notify me on WhatsApp</a>
+      </div>
+    </sc-if>
+    <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 20px;">
+      <sc-for list="{{ items }}" as="p" hint-placeholder-count="8">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div onClick="{{ p.open }}" style="position: relative; aspect-ratio: 3 / 4; border-radius: 14px; overflow: hidden; cursor: pointer; background: {{ p.bg }}; transition: transform 0.18s ease, box-shadow 0.18s ease;" style-hover="transform: translateY(-4px); box-shadow: 0 14px 30px rgba(60, 20, 30, 0.22);">
+            <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 38px; color: {{ p.motif }};">✦</span>
+            <sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}">
+              <span style="position: absolute; top: 10px; left: 10px; background: rgba(250, 245, 236, 0.93); color: #6E2138; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px;">{{ p.tag }}</span>
+            </sc-if>
+            <button onClick="{{ p.quickAdd }}" aria-label="Add to bag" style="position: absolute; bottom: 10px; right: 10px; height: 36px; border-radius: 999px; border: none; background: rgba(250, 245, 236, 0.95); color: #571B2C; font-size: 12px; font-weight: 700; padding: 0 14px; cursor: pointer; box-shadow: 0 2px 10px rgba(40, 10, 18, 0.25);" style-hover="background: #FFFFFF;">+ Add</button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px; padding: 0 2px;">
+            <span style="font-size: 14px; font-weight: 700; line-height: 1.3;">{{ p.name }}</span>
+            <span style="font-size: 13px; color: #9A7E85;">{{ p.shade }}</span>
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+              <span style="font-size: 15px; font-weight: 700; color: #3E1220;">{{ p.priceFmt }}</span>
+              <span style="font-size: 13px; color: #B59CA3; text-decoration: line-through;">{{ p.mrpFmt }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    </sc-if>
+  </section>
+
+  <!-- Trust strip -->
+  <section style="max-width: 1280px; margin: 36px auto; padding: 0 32px;">
+    <div style="border-top: 1px solid #EADFC9; border-bottom: 1px solid #EADFC9; padding: 22px 8px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center;">
+      <div style="display: flex; flex-direction: column; gap: 5px;"><span style="font-size: 14px; font-weight: 700; color: #571B2C;">Mill-direct fabrics</span><span style="font-size: 13px; color: #9A7E85;">quality you can feel</span></div>
+      <div style="display: flex; flex-direction: column; gap: 5px;"><span style="font-size: 14px; font-weight: 700; color: #571B2C;">COD + UPI</span><span style="font-size: 13px; color: #9A7E85;">pay the way you prefer</span></div>
+      <div style="display: flex; flex-direction: column; gap: 5px;"><span style="font-size: 14px; font-weight: 700; color: #571B2C;">WhatsApp ordering</span><span style="font-size: 13px; color: #9A7E85;">fabric videos &amp; live help</span></div>
+      <div style="display: flex; flex-direction: column; gap: 5px;"><span style="font-size: 14px; font-weight: 700; color: #571B2C;">Pan-India shipping</span><span style="font-size: 13px; color: #9A7E85;">free above ₹1,999</span></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background: #3E0F1E; color: rgba(250, 241, 220, 0.75);">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 44px 32px 36px; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px;">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; flex-direction: column; line-height: 1;">
+          <span style="font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 30px; letter-spacing: 0.04em; color: #FAF1DC;">Vedi</span>
+          <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.36em; text-transform: uppercase; color: #D8B36A; margin-top: 3px;">Collections</span>
+        </div>
+        <p style="font-size: 14px; line-height: 1.6; margin: 0; max-width: 40ch;">A small boutique for fine dress materials &amp; suiting-shirting. Message us on WhatsApp for fabric videos, custom stitching and styling help.</p>
+        <span style="font-size: 12px; color: rgba(250, 241, 220, 0.45);">© 2026 Vedi Collections · Jaipur, India</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #D8B36A;">Shop</span>
+        <sc-for list="{{ footerCats }}" as="fc" hint-placeholder-count="4">
+          <button onClick="{{ fc.pick }}" style="background: none; border: none; padding: 0; text-align: left; color: rgba(250, 241, 220, 0.8); font-size: 14px; cursor: pointer;" style-hover="color: #FAF1DC;">{{ fc.name }}</button>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #D8B36A;">Reach us</span>
+        <a href="{{ waHelloHref }}" target="_blank" style="color: rgba(250, 241, 220, 0.8); font-size: 14px; text-decoration: none;" style-hover="color: #FAF1DC;">WhatsApp · +91 98765 43210</a>
+        <span style="font-size: 14px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="630b060f0f0c231506070a000c0f0f0600170a0c0d104d0a0d">[email&#160;protected]</a></span>
+        <span style="font-size: 14px;">Mon–Sat, 10am–7pm IST</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp button -->
+  <a href="{{ waHelloHref }}" target="_blank" aria-label="Chat on WhatsApp" style="position: fixed; bottom: 24px; right: 24px; z-index: 30; width: 56px; height: 56px; border-radius: 999px; background: #1FA855; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 22px rgba(20, 90, 50, 0.4); text-decoration: none; transition: transform 0.15s ease;" style-hover="transform: scale(1.06);">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.1-.3 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.3 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"></path></svg>
+  </a>
+
+  <!-- Product detail modal -->
+  <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Product Detail" style="position: fixed; inset: 0; z-index: 40; animation: vcFade 0.2s ease;">
+      <div onClick="{{ sel.back }}" style="position: absolute; inset: 0; background: rgba(30, 10, 16, 0.5);"></div>
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(920px, calc(100vw - 64px)); max-height: calc(100vh - 64px); background: #FAF5EC; border-radius: 20px; overflow: hidden; display: grid; grid-template-columns: 1fr 1.1fr; box-shadow: 0 30px 80px rgba(20, 5, 10, 0.5); animation: vcUp 0.25s ease;">
+        <div style="position: relative; background: {{ sel.bg }}; min-height: 520px;">
+          <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 64px; color: {{ sel.motif }};">✦</span>
+        </div>
+        <div style="display: flex; flex-direction: column; overflow-y: auto; max-height: calc(100vh - 64px);">
+          <div style="padding: 28px 28px 20px; display: flex; flex-direction: column; gap: 16px; flex: 1;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #B98A3C;">{{ sel.tagLine }}</span>
+                <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 32px; line-height: 1.12; color: #3E1220; margin: 0;">{{ sel.name }}</h1>
+                <span style="font-size: 15px; color: #9A7E85;">{{ sel.shade }}</span>
+              </div>
+              <button onClick="{{ sel.back }}" aria-label="Close" style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 999px; border: 1px solid #E2D3B4; background: #FFFDF7; color: #571B2C; font-size: 15px; cursor: pointer;" style-hover="background: #F7EFDC;">✕</button>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 10px;">
+              <span style="font-size: 24px; font-weight: 700; color: #3E1220;">{{ sel.priceFmt }}</span>
+              <span style="font-size: 15px; color: #B59CA3; text-decoration: line-through;">{{ sel.mrpFmt }}</span>
+              <span style="font-size: 13px; font-weight: 700; color: #1FA855;">{{ sel.saveLine }}</span>
+            </div>
+            <sc-if value="{{ sel.hasSizes }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B4A53;">Select size</span>
+                <div style="display: flex; gap: 8px;">
+                  <sc-for list="{{ sel.sizes }}" as="s" hint-placeholder-count="4">
+                    <button onClick="{{ s.pick }}" style="min-width: 50px; height: 44px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; background: {{ s.bg }}; color: {{ s.fg }}; border: 1px solid {{ s.bd }};">{{ s.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <div style="border-top: 1px solid #EADFC9; padding-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; gap: 12px; font-size: 14px;"><span style="width: 70px; flex-shrink: 0; color: #9A7E85;">Fabric</span><span style="color: #3E1220; font-weight: 600;">{{ sel.fabric }}</span></div>
+              <div style="display: flex; gap: 12px; font-size: 14px;"><span style="width: 70px; flex-shrink: 0; color: #9A7E85;">Includes</span><span style="color: #3E1220; font-weight: 600;">{{ sel.work }}</span></div>
+              <div style="display: flex; gap: 12px; font-size: 14px;"><span style="width: 70px; flex-shrink: 0; color: #9A7E85;">Care</span><span style="color: #3E1220; font-weight: 600;">{{ sel.care }}</span></div>
+            </div>
+            <div style="background: #F3EAD7; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.55; color: #6B4A53;">Want a fabric video or try-on help? <a href="{{ sel.waHref }}" target="_blank" style="color: #1B7A43; font-weight: 700; text-decoration: none;">Chat with us on WhatsApp</a> — we reply within minutes.</div>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 16px 28px 24px; border-top: 1px solid #EADFC9;">
+            <button onClick="{{ sel.addToBag }}" style="flex: 1; height: 52px; border-radius: 12px; border: none; background: #571B2C; color: #FAF1DC; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; cursor: pointer;" style-hover="background: #6E2138;">Add to bag</button>
+            <a href="{{ sel.waHref }}" target="_blank" style="flex: 1; height: 52px; border-radius: 12px; background: #1FA855; color: #FFFFFF; font-size: 14px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;" style-hover="background: #23B95F;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.1-.3 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.3 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"></path></svg>
+              Order now
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Cart side drawer -->
+  <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Bag" style="position: fixed; inset: 0; z-index: 50; animation: vcFade 0.15s ease;">
+      <div onClick="{{ closeCart }}" style="position: absolute; inset: 0; background: rgba(30, 10, 16, 0.5);"></div>
+      <div style="position: absolute; top: 0; right: 0; bottom: 0; width: min(440px, 100vw); background: #FAF5EC; display: flex; flex-direction: column; box-shadow: -20px 0 60px rgba(20, 5, 10, 0.35); animation: vcRight 0.25s ease;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 22px 24px 12px;">
+          <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 26px; color: #3E1220; margin: 0;">Your bag {{ bagCountLabel }}</h2>
+          <button onClick="{{ closeCart }}" aria-label="Close" style="width: 36px; height: 36px; border-radius: 999px; border: 1px solid #E2D3B4; background: #FFFDF7; color: #571B2C; font-size: 15px; cursor: pointer;" style-hover="background: #F7EFDC;">✕</button>
+        </div>
+        <sc-if value="{{ hasCartItems }}" hint-placeholder-val="{{ true }}">
+          <div style="flex: 1; overflow-y: auto; padding: 0 24px;">
+            <sc-for list="{{ cartItems }}" as="ci" hint-placeholder-count="2">
+              <div style="display: flex; gap: 14px; padding: 15px 0; border-bottom: 1px solid #EADFC9;">
+                <div style="width: 62px; height: 80px; border-radius: 8px; flex-shrink: 0; background: {{ ci.bg }};"></div>
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                  <span style="font-size: 14px; font-weight: 700; line-height: 1.3;">{{ ci.name }}</span>
+                  <span style="font-size: 13px; color: #9A7E85;">{{ ci.meta }}</span>
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+                    <div style="display: flex; align-items: center; border: 1px solid #D8C9A8; border-radius: 999px; background: #FFFDF7;">
+                      <button onClick="{{ ci.dec }}" style="width: 32px; height: 32px; border: none; background: none; color: #571B2C; font-size: 15px; cursor: pointer;">−</button>
+                      <span style="min-width: 20px; text-align: center; font-size: 13px; font-weight: 700;">{{ ci.qty }}</span>
+                      <button onClick="{{ ci.inc }}" style="width: 32px; height: 32px; border: none; background: none; color: #571B2C; font-size: 15px; cursor: pointer;">+</button>
+                    </div>
+                    <span style="font-size: 15px; font-weight: 700; color: #3E1220;">{{ ci.lineFmt }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="padding: 14px 24px 22px; border-top: 1px solid #EADFC9; display: flex; flex-direction: column; gap: 11px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 13px; font-weight: 600; color: #6B4A53;">{{ shipMsg }}</span>
+              <div style="height: 5px; border-radius: 999px; background: #EADFC9; overflow: hidden;"><div style="height: 100%; border-radius: 999px; background: #B98A3C; width: {{ shipPct }}%;"></div></div>
+            </div>
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-size: 15px; color: #6B4A53;">Subtotal</span>
+              <span style="font-size: 21px; font-weight: 700; color: #3E1220;">{{ subtotalFmt }}</span>
+            </div>
+            <a href="{{ waCartHref }}" target="_blank" style="height: 54px; border-radius: 12px; background: #1FA855; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 9px;" style-hover="background: #23B95F;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.1-.3 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.3 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"></path></svg>
+              Checkout on WhatsApp
+            </a>
+            <span style="font-size: 12px; color: #9A7E85; text-align: center;">You’ll confirm your order in WhatsApp chat — pay via UPI or Cash on Delivery.</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 36px 24px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;">
+            <span style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 22px; color: #6B4A53;">Your bag is empty</span>
+            <button onClick="{{ closeCart }}" style="background: #571B2C; color: #FAF1DC; border: none; border-radius: 999px; padding: 13px 24px; font-size: 14px; font-weight: 700; cursor: pointer;" style-hover="background: #6E2138;">Browse the festive edit</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Toast -->
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 60; background: #2B161E; color: #FAF1DC; font-size: 14px; font-weight: 600; padding: 11px 20px; border-radius: 999px; box-shadow: 0 6px 20px rgba(30, 10, 16, 0.35); pointer-events: none; animation: vcUp 0.25s ease; white-space: nowrap;">{{ toast }}</div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { main: 'All', sub: null, selId: null, selSize: null, cart: [], toast: '', cartOpen: false };
+
+  WA = '919876543210';
+  FREE_SHIP = 1999;
+  MAINS = ['All', 'Ladies', 'Gents'];
+  SUBS = {
+    'Ladies': [ { name: 'Suits' }, { name: 'Sarees', soon: true }, { name: 'Haryanvi Dress', soon: true } ],
+    'Gents': [ { name: 'Pant-Shirt Cloth' }, { name: 'Safari Cloth' } ]
+  };
+  SIZES = ['S', 'M', 'L', 'XL'];
+
+  PRODUCTS = [
+    { id: 1, name: 'Embroidered Cotton Suit', shade: 'Deep Maroon', main: 'Ladies', cat: 'Suits', price: 1850, mrp: 2400, tag: 'Bestseller', c1: '#7A2640', c2: '#42101F', fabric: 'Pure cotton, unstitched', work: 'Kurta 2.5m + salwar 2m + dupatta 2.25m', care: 'Gentle hand wash', unit: '1 suit set' },
+    { id: 2, name: 'Banarasi Silk Suit', shade: 'Emerald Green', main: 'Ladies', cat: 'Suits', price: 3450, mrp: 4200, tag: 'Festive', c1: '#1E6B52', c2: '#0C3A2C', fabric: 'Banarasi silk blend, unstitched', work: 'Kurta 2.5m + bottom 2m + dupatta 2.25m', care: 'Dry clean only', unit: '1 suit set' },
+    { id: 3, name: 'Chikankari Georgette Suit', shade: 'Powder Blue', main: 'Ladies', cat: 'Suits', price: 2250, mrp: null, tag: 'Handwork', c1: '#9DB8CC', c2: '#5E7E96', fabric: 'Georgette, Lucknowi chikankari', work: 'Kurta 2.5m + bottom 2m + dupatta 2.25m', care: 'Gentle hand wash', unit: '1 suit set', light: true },
+    { id: 4, name: 'Bandhani Suit Set', shade: 'Mustard', main: 'Ladies', cat: 'Suits', price: 1650, mrp: 2100, tag: null, c1: '#D49A2E', c2: '#8A5A14', fabric: 'Cotton-silk, hand-tied bandhani', work: 'Kurta 2.5m + salwar 2m + dupatta 2.25m', care: 'Dry clean only', unit: '1 suit set' },
+    { id: 5, name: 'Chanderi Suit Set', shade: 'Ivory & Gold', main: 'Ladies', cat: 'Suits', price: 2450, mrp: null, tag: 'New', c1: '#E6D5AE', c2: '#C2A05E', fabric: 'Chanderi cotton-silk, woven butta', work: 'Kurta 2.5m + bottom 2m + dupatta 2.25m', care: 'Gentle hand wash', unit: '1 suit set', light: true },
+    { id: 6, name: 'Phulkari Suit Set', shade: 'Sunset Orange', main: 'Ladies', cat: 'Suits', price: 1950, mrp: 2500, tag: 'Handwork', c1: '#D96A2B', c2: '#9A3A18', fabric: 'Cotton, Punjabi phulkari dupatta', work: 'Kurta 2.5m + salwar 2m + dupatta 2.25m', care: 'Gentle hand wash', unit: '1 suit set' },
+    { id: 7, name: 'Cotton Pant-Shirt Combo', shade: 'Steel Grey × Sky Blue', main: 'Gents', cat: 'Pant-Shirt Cloth', price: 1450, mrp: 1800, tag: 'Bestseller', c1: '#5E7282', c2: '#2E3A44', fabric: 'Premium combed cotton', work: 'Pant 1.2m + shirt 1.6m', care: 'Machine wash cold', unit: '1 combo' },
+    { id: 8, name: 'Linen Blend Combo', shade: 'Natural Beige × White', main: 'Gents', cat: 'Pant-Shirt Cloth', price: 2100, mrp: 2600, tag: 'Premium', c1: '#C7B299', c2: '#8A744F', fabric: 'Linen-cotton blend', work: 'Pant 1.2m + shirt 1.6m', care: 'Gentle wash, warm iron', unit: '1 combo', light: true },
+    { id: 9, name: 'Terry Rayon Combo', shade: 'Navy × Cream', main: 'Gents', cat: 'Pant-Shirt Cloth', price: 1150, mrp: 1500, tag: null, c1: '#2E4A78', c2: '#16263F', fabric: 'Terry rayon suiting + shirting', work: 'Pant 1.2m + shirt 1.6m', care: 'Machine wash cold', unit: '1 combo' },
+    { id: 10, name: 'Giza Cotton Shirt Cloth', shade: 'Crisp White', main: 'Gents', cat: 'Pant-Shirt Cloth', price: 999, mrp: null, tag: 'New', c1: '#E8E4D8', c2: '#B8B09A', fabric: 'Giza cotton shirting', work: 'Shirt length 1.6m', care: 'Machine wash cold', unit: '1.6m cut', light: true },
+    { id: 11, name: 'Classic Safari Cloth', shade: 'Olive Green', main: 'Gents', cat: 'Safari Cloth', price: 1950, mrp: 2400, tag: 'Classic', c1: '#5A6B42', c2: '#2C361E', fabric: 'Poly-viscose safari suiting', work: 'Safari suit length 2.5m', care: 'Machine wash cold', unit: '2.5m cut' },
+    { id: 12, name: 'Premium Safari Cloth', shade: 'Slate Grey', main: 'Gents', cat: 'Safari Cloth', price: 2250, mrp: 2800, tag: null, c1: '#6B7280', c2: '#333A45', fabric: 'Wool-blend safari suiting', work: 'Safari suit length 2.5m', care: 'Dry clean only', unit: '2.5m cut' }
+  ];
+
+  fmt(n) { return '\u20B9' + n.toLocaleString('en-IN'); }
+
+  bgFor(p) {
+    return 'linear-gradient(to top, rgba(185,138,60,0.92) 0%, rgba(185,138,60,0.92) 8%, rgba(0,0,0,0) 8.5%), repeating-linear-gradient(105deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 3px, rgba(0,0,0,0) 3px, rgba(0,0,0,0) 13px), linear-gradient(155deg, ' + p.c1 + ' 12%, ' + p.c2 + ' 90%)';
+  }
+
+  motifFor(p) { return p.light ? 'rgba(62,18,32,0.30)' : 'rgba(250,241,220,0.40)'; }
+
+  showToast(msg) {
+    clearTimeout(this._toastT);
+    this.setState({ toast: msg });
+    this._toastT = setTimeout(() => this.setState({ toast: '' }), 2200);
+  }
+
+  addToCart(p, size) {
+    this.setState(s => {
+      const cart = s.cart.map(ci => Object.assign({}, ci));
+      const hit = cart.find(ci => ci.id === p.id && ci.size === size);
+      if (hit) hit.qty += 1; else cart.push({ id: p.id, size: size, qty: 1 });
+      return { cart };
+    });
+    this.showToast('Added to bag');
+  }
+
+  changeQty(idx, delta) {
+    this.setState(s => {
+      const cart = s.cart.map(ci => Object.assign({}, ci));
+      cart[idx].qty += delta;
+      return { cart: cart.filter(ci => ci.qty > 0) };
+    });
+  }
+
+  waLink(text) { return 'https://wa.me/' + this.WA + '?text=' + encodeURIComponent(text); }
+
+  componentDidUpdate() {
+    const lock = this.state.selId !== null || this.state.cartOpen;
+    document.body.style.overflow = lock ? 'hidden' : '';
+  }
+
+  renderVals() {
+    const S = this.state;
+    const fmt = this.fmt.bind(this);
+
+    const goTo = (main, sub) => {
+      this.setState({ main: main, sub: sub });
+      const el = this._gridRef && this._gridRef.current;
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' });
+    };
+
+    const mains = this.MAINS.map(name => {
+      const active = S.main === name;
+      return {
+        name,
+        bg: active ? '#571B2C' : 'rgba(0,0,0,0)',
+        fg: active ? '#FAF1DC' : '#6B4A53',
+        pick: () => goTo(name, null)
+      };
+    });
+
+    const subDefs = this.SUBS[S.main] || [];
+    const subs = subDefs.map(d => {
+      const active = S.sub === d.name;
+      return {
+        name: d.name,
+        soonLabel: d.soon ? ' · soon' : '',
+        bg: active ? '#B98A3C' : '#FFFDF7',
+        fg: active ? '#FFFDF7' : (d.soon ? '#B59CA3' : '#6B4A53'),
+        bd: active ? '#B98A3C' : '#E2D3B4',
+        pick: () => this.setState({ sub: active ? null : d.name })
+      };
+    });
+    const activeSubDef = subDefs.find(d => d.name === S.sub);
+    const comingSoon = !!(activeSubDef && activeSubDef.soon);
+
+    const footerCats = [
+      { label: 'Ladies — Suits', main: 'Ladies', sub: 'Suits' },
+      { label: 'Ladies — Sarees (soon)', main: 'Ladies', sub: 'Sarees' },
+      { label: 'Ladies — Haryanvi Dress (soon)', main: 'Ladies', sub: 'Haryanvi Dress' },
+      { label: 'Gents — Pant-Shirt Cloth', main: 'Gents', sub: 'Pant-Shirt Cloth' },
+      { label: 'Gents — Safari Cloth', main: 'Gents', sub: 'Safari Cloth' }
+    ].map(d => ({ name: d.label, pick: () => goTo(d.main, d.sub) }));
+
+    const featured = [this.PRODUCTS[0], this.PRODUCTS[7]].map((p, i) => ({
+      key: p.id,
+      name: p.name,
+      bg: this.bgFor(p),
+      motif: this.motifFor(p),
+      ml: i === 0 ? '0px' : '-44px',
+      rot: i === 0 ? '-4deg' : '4deg',
+      open: () => this.setState({ selId: p.id, selSize: null })
+    }));
+
+    const filtered = this.PRODUCTS.filter(p => (S.main === 'All' || p.main === S.main) && (!S.sub || p.cat === S.sub));
+    const items = filtered.map(p => ({
+      key: p.id,
+      name: p.name,
+      shade: p.shade,
+      priceFmt: fmt(p.price),
+      mrpFmt: p.mrp ? fmt(p.mrp) : '',
+      hasTag: !!p.tag,
+      tag: p.tag || '',
+      bg: this.bgFor(p),
+      motif: this.motifFor(p),
+      open: () => this.setState({ selId: p.id, selSize: null }),
+      quickAdd: (e) => {
+        e.stopPropagation();
+        this.addToCart(p, p.unit);
+      }
+    }));
+
+    const selP = this.PRODUCTS.find(p => p.id === S.selId);
+    const sel = selP ? {
+      name: selP.name,
+      shade: selP.shade,
+      priceFmt: fmt(selP.price),
+      mrpFmt: selP.mrp ? fmt(selP.mrp) : '',
+      saveLine: selP.mrp ? 'Save ' + fmt(selP.mrp - selP.price) : '',
+      tagLine: [selP.main, selP.cat, selP.tag].filter(Boolean).join(' · '),
+      fabric: selP.fabric,
+      work: selP.work,
+      care: selP.care,
+      bg: this.bgFor(selP),
+      motif: this.motifFor(selP),
+      hasSizes: !!selP.sized,
+      sizes: (selP.sized ? this.SIZES : []).map(sz => {
+        const active = S.selSize === sz;
+        return {
+          label: sz,
+          bg: active ? '#571B2C' : '#FFFDF7',
+          fg: active ? '#FAF1DC' : '#3E1220',
+          bd: active ? '#571B2C' : '#D8C9A8',
+          pick: () => this.setState({ selSize: sz })
+        };
+      }),
+      back: () => this.setState({ selId: null }),
+      addToBag: () => { this.addToCart(selP, selP.unit); },
+      waHref: this.waLink(
+        'Namaste! I\u2019m interested in the *' + selP.name + ' \u2014 ' + selP.shade + '* (' + fmt(selP.price) + ')' +
+        (S.selSize ? ', size ' + S.selSize : '') + '. Is it available?'
+      )
+    } : null;
+
+    const cartItems = S.cart.map((ci, idx) => {
+      const p = this.PRODUCTS.find(x => x.id === ci.id);
+      return {
+        key: ci.id + '-' + ci.size,
+        name: p.name,
+        meta: p.shade + ' · ' + ci.size,
+        qty: ci.qty,
+        lineFmt: fmt(p.price * ci.qty),
+        bg: this.bgFor(p),
+        inc: () => this.changeQty(idx, 1),
+        dec: () => this.changeQty(idx, -1)
+      };
+    });
+    const cartCount = S.cart.reduce((a, ci) => a + ci.qty, 0);
+    const subtotal = S.cart.reduce((a, ci) => {
+      const p = this.PRODUCTS.find(x => x.id === ci.id);
+      return a + p.price * ci.qty;
+    }, 0);
+    const shipPct = Math.min(100, Math.round((subtotal / this.FREE_SHIP) * 100));
+    const shipMsg = subtotal >= this.FREE_SHIP
+      ? 'You\u2019ve unlocked free shipping'
+      : 'Add ' + fmt(this.FREE_SHIP - subtotal) + ' more for free shipping';
+
+    const waCartLines = S.cart.map(ci => {
+      const p = this.PRODUCTS.find(x => x.id === ci.id);
+      return '\u2022 ' + p.name + ' (' + p.shade + ', ' + ci.size + ') \u00D7 ' + ci.qty + ' \u2014 ' + fmt(p.price * ci.qty);
+    });
+    const waCartHref = this.waLink(
+      'Namaste! I\u2019d like to place an order with Vedi Collections:\n\n' + waCartLines.join('\n') +
+      '\n\nSubtotal: ' + fmt(subtotal) + '\n\nPlease confirm availability and delivery time.'
+    );
+
+    return {
+      mains,
+      subs,
+      hasSubs: subs.length > 0,
+      footerCats,
+      featured,
+      items,
+      showGrid: !comingSoon,
+      showComing: comingSoon,
+      comingTitle: S.sub || '',
+      waSoonHref: this.waLink('Namaste! Please let me know when ' + (S.sub || 'the new collection') + ' arrives at Vedi Collections.'),
+      gridTitle: comingSoon ? S.sub : (S.sub ? S.sub : (S.main === 'All' ? 'New & noteworthy' : (S.main === 'Ladies' ? 'For her' : 'For him'))),
+      gridCount: comingSoon ? 'coming soon' : filtered.length + (filtered.length === 1 ? ' piece' : ' pieces'),
+      gridRef: (this._gridRef || (this._gridRef = React.createRef())),
+      shopNow: () => {
+        const el = this._gridRef && this._gridRef.current;
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' });
+      },
+      hasSel: !!sel,
+      sel,
+      cartOpen: S.cartOpen,
+      openCart: () => this.setState({ cartOpen: true }),
+      closeCart: () => this.setState({ cartOpen: false }),
+      cartItems,
+      hasCartItems: cartItems.length > 0,
+      cartEmpty: cartItems.length === 0,
+      cartCount,
+      hasCartCount: cartCount > 0,
+      bagCountLabel: cartCount > 0 ? '(' + cartCount + ')' : '',
+      subtotalFmt: fmt(subtotal),
+      shipPct,
+      shipMsg,
+      waCartHref,
+      waHelloHref: this.waLink('Namaste! I\u2019d like to know more about Vedi Collections.'),
+      toast: S.toast,
+      hasToast: !!S.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
