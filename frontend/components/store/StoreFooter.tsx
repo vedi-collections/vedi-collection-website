@@ -1,22 +1,19 @@
+import Link from "next/link";
+
 import { Brand } from "@/components/layout/Brand";
 import { Container } from "@/components/layout/Container";
 import { WhatsAppIcon } from "@/components/ui/icons";
-import type { MainTab } from "@/lib/shop/catalog";
+import type { MainTab, ShopLink } from "@/lib/shop/catalog";
 import { waHelloLink } from "@/lib/shop/whatsapp";
 
 type StoreFooterProps = {
   /** Jump to a category in the single-page catalog. */
   onNavigate: (main: MainTab, subLabel?: string) => void;
+  /** "Shop" column links, derived from the live catalog (admin sub-categories). */
+  links: ShopLink[];
 };
 
-const SHOP_LINKS: { label: string; main: MainTab; sub?: string }[] = [
-  { label: "Ladies Suits", main: "Ladies", sub: "Suits" },
-  { label: "Pant-Shirt Cloth", main: "Gents", sub: "Pant-Shirt Cloth" },
-  { label: "Safari Cloth", main: "Gents", sub: "Safari Cloth" },
-  { label: "All Products", main: "All" }
-];
-
-export function StoreFooter({ onNavigate }: StoreFooterProps) {
+export function StoreFooter({ onNavigate, links }: StoreFooterProps) {
   return (
     <footer className="bg-primary-dark text-primary-fg/[0.78]">
       <Container className="pb-24 pt-9 min-[900px]:pb-10 min-[900px]:pt-12">
@@ -24,7 +21,7 @@ export function StoreFooter({ onNavigate }: StoreFooterProps) {
           <div>
             <Brand tone="light" />
             <p className="mt-3.5 max-w-[42ch] text-[13px] leading-relaxed">
-              Jaipur boutique fabrics, curated for everyday elegance and festive dressing. Share your
+              Delhi boutique fabrics, curated for everyday elegance and festive dressing. Share your
               choice on WhatsApp and we&apos;ll confirm availability, delivery and payment.
             </p>
             <a
@@ -40,7 +37,7 @@ export function StoreFooter({ onNavigate }: StoreFooterProps) {
           <div className="hidden min-[900px]:block">
             <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-accent-light">Shop</h3>
             <ul className="mt-4 space-y-2 text-sm">
-              {SHOP_LINKS.map((link) => (
+              {links.map((link) => (
                 <li key={link.label}>
                   <button type="button" onClick={() => onNavigate(link.main, link.sub)} className="hover:text-accent-light">
                     {link.label}
@@ -60,16 +57,21 @@ export function StoreFooter({ onNavigate }: StoreFooterProps) {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@vedicollections.in" className="hover:text-accent-light">
-                  hello@vedicollections.in
+                <a href="mailto:vedicollections.official@gmail.com" className="hover:text-accent-light">
+                  vedicollections.official@gmail.com
                 </a>
               </li>
-              <li>Sitapura, Jaipur, Rajasthan</li>
+              <li>Delhi, India</li>
             </ul>
           </div>
         </div>
 
-        <p className="mt-8 text-[11px] text-primary-fg/50">© 2026 Vedi Collections. All rights reserved.</p>
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[11px] text-primary-fg/50">
+          <p>© 2026 Vedi Collections. All rights reserved.</p>
+          <Link href="/admin/login" className="hover:text-accent-light">
+            Admin
+          </Link>
+        </div>
       </Container>
     </footer>
   );

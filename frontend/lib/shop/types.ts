@@ -63,6 +63,12 @@ export type Product = {
   variants: ProductVariant[];
   /** Primary OUR image URL; null → render gradient placeholder. */
   imageUrl: string | null;
+  /** All media URLs (images + videos), cover first. Drives the detail gallery.
+   *  Optional so mock data without a gallery still satisfies the type; when
+   *  absent, components fall back to `imageUrl`. */
+  media?: string[];
+  /** Pieces available to order. Caps cart quantity; 0 = out of stock. */
+  stock: number;
   isActive: boolean;
 };
 

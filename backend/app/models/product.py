@@ -1,49 +1,48 @@
 import uuid
 from datetime import datetime
-from typing import Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, Uuid
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Boolean, DateTime, Enum, Integer, String, Text, Uuid, func
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base, JSONBType
+from app.models.enums import ProductAudience, ProductStatus
 
 
 class Product(Base):
-    """Mirror of a Meta catalog product.
+    """A catalog product, managed manually by the admin (no external sync).
 
-    Core fields are overwritten by sync; seller-only enrichments live in
-    product_extras and are never overwritten.
+    Soft delete uses `is_active`; the launch lifecycle uses `status` +
+    `go_live_at` (see Phase 5). Public reads require `status == live AND is_active`.
     """
 
     __tablename__ = "products"
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    retailer_id: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(512), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    price_minor: Mapped[int] = mapped_column(Integer, nullable=False)
-    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="INR")
-    availability: Mapped[str | None] = mapped_column(String(32), nullable=True)
-    image_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
-    meta_raw: Mapped[dict[str, Any] | None] = mapped_column(JSONBType, nullable=True)
-    synced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Whole rupees (INR). Integer per the project money rule; the UI formats
+    # with Indian-style commas (e.g. 1850 -> "1,850"). No paise.
+    price: Mapped[int] = mapped_column(Integer, nullable=False)
+    stock_quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # List of image URLs (admin-supplied). JSONB on Postgres, JSON on SQLite.
+    images: Mapped[list[str]] = mapped_column(JSONBType, nullable=False, default=list)
+    # Fixed top-level category (all/women/men) + a free-text sub-category the
+    # seller can reuse or create (e.g. "Suits", "Safari Cloth"). NULL = none yet.
+    audience: Mapped[ProductAudience] = mapped_column(
+        Enum(ProductAudience, name="product_audience"),
+        nullable=False,
+        default=ProductAudience.women,
+    )
+    subcategory: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    status: Mapped[ProductStatus] = mapped_column(
+        Enum(ProductStatus, name="product_status"), nullable=False, default=ProductStatus.draft
+    )
+    # Soft-delete flag. DELETE flips this false; the row is never dropped.
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-
-    extras: Mapped["ProductExtra | None"] = relationship(
-        back_populates="product", cascade="all, delete-orphan"
+    go_live_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-
-
-class ProductExtra(Base):
-    """Seller-editable product enrichments. Sync must never overwrite these."""
-
-    __tablename__ = "product_extras"
-
-    product_id: Mapped[uuid.UUID] = mapped_column(
-        Uuid(as_uuid=True), ForeignKey("products.id"), primary_key=True
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
-    long_description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    extra_images: Mapped[list[str] | None] = mapped_column(JSONBType, nullable=True)
-    tags: Mapped[list[str] | None] = mapped_column(JSONBType, nullable=True)
-
-    product: Mapped[Product] = relationship(back_populates="extras")

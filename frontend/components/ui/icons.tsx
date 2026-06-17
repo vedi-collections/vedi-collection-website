@@ -62,6 +62,33 @@ export function CloseIcon({ className }: IconProps) {
   );
 }
 
+export function TrashIcon({ className }: IconProps) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} {...strokeProps}>
+      <path d="M5 7h14M10 7V5.5a1.5 1.5 0 0 1 1.5-1.5h1A1.5 1.5 0 0 1 14 5.5V7m3 0-.7 12.1a1.4 1.4 0 0 1-1.4 1.3H9.1a1.4 1.4 0 0 1-1.4-1.3L7 7m3 3.5v6m4-6v6" />
+    </svg>
+  );
+}
+
+export function ClockIcon({ className }: IconProps) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} {...strokeProps}>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 7.5V12l3 2" />
+    </svg>
+  );
+}
+
+export function UsersIcon({ className }: IconProps) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} {...strokeProps}>
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+      <path d="M16 5.2a3 3 0 0 1 0 5.6M17.6 19a5.5 5.5 0 0 0-2.6-4.6" />
+    </svg>
+  );
+}
+
 export function ChevronDownIcon({ className }: IconProps) {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24" className={className} {...strokeProps}>

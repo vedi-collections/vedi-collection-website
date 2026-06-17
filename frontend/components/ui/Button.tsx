@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 
 import { cn } from "@/lib/cn";
 
-export type ButtonVariant = "primary" | "outline" | "whatsapp" | "ghost";
+export type ButtonVariant = "primary" | "cta" | "outline" | "whatsapp" | "ghost";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const base =
@@ -10,6 +10,7 @@ const base =
 
 const variants: Record<ButtonVariant, string> = {
   primary: "bg-primary text-primary-fg hover:bg-primary-hover",
+  cta: "bg-cta text-cta-fg hover:bg-cta-hover",
   outline: "border border-line bg-surface text-primary hover:bg-surface-alt",
   whatsapp: "bg-whatsapp text-whatsapp-fg hover:bg-whatsapp-dark",
   ghost: "text-muted hover:text-primary"

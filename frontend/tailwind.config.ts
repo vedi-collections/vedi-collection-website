@@ -26,6 +26,11 @@ const config: Config = {
           dark: c("--color-primary-dark"),
           fg: c("--color-primary-fg")
         },
+        cta: {
+          DEFAULT: c("--color-cta"),
+          hover: c("--color-cta-hover"),
+          fg: c("--color-cta-fg")
+        },
         accent: {
           DEFAULT: c("--color-accent"),
           light: c("--color-accent-light"),

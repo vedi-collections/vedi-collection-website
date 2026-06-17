@@ -6,14 +6,14 @@ import { lineKey, useCart } from "@/components/cart/CartProvider";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { QtyStepper } from "@/components/ui/QtyStepper";
 import { buttonClasses } from "@/components/ui/Button";
-import { WhatsAppIcon, CloseIcon } from "@/components/ui/icons";
+import { WhatsAppIcon, CloseIcon, TrashIcon } from "@/components/ui/icons";
 import { formatINR } from "@/lib/shop/money";
 import { PROMO } from "@/lib/shop/promo-config";
 import { waCartLink } from "@/lib/shop/whatsapp";
 
 /** The bag: bottom sheet on mobile, right-side drawer on desktop (design_ref). */
 export function CartDrawer() {
-  const { lines, subtotalMinor, isOpen, closeCart, changeQty } = useCart();
+  const { lines, subtotalMinor, isOpen, closeCart, changeQty, remove } = useCart();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -96,7 +96,28 @@ export function CartDrawer() {
                         {line.product.shade}
                         {line.size ? ` · ${line.size}` : ""} · {line.product.unit}
                       </p>
-                      <QtyStepper value={line.qty} onChange={(next) => changeQty(key, next - line.qty)} label={line.product.name} />
+                      <div className="flex items-center gap-3">
+                        <QtyStepper
+                          value={line.qty}
+                          max={line.product.stock}
+                          onChange={(next) => changeQty(key, next - line.qty)}
+                          label={line.product.name}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => remove(key)}
+                          aria-label={`Remove ${line.product.name} from bag`}
+                          className="inline-flex items-center gap-1 text-xs font-medium text-muted-soft transition-colors hover:text-primary"
+                        >
+                          <TrashIcon className="h-3.5 w-3.5" />
+                          Remove
+                        </button>
+                      </div>
+                      {line.qty >= line.product.stock && (
+                        <p className="mt-1.5 text-[11px] font-medium text-accent">
+                          Only {line.product.stock} in stock
+                        </p>
+                      )}
                     </div>
                     <strong className="self-start text-[13px] text-heading">
                       {formatINR(line.product.priceMinor * line.qty)}

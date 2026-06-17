@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Cormorant_Garamond, Karla } from "next/font/google";
 
-import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
@@ -38,11 +37,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body>
         {/* Client providers wrap server-rendered children: only the provider
             boundary is client; pages below stay server components. */}
-        <AuthProvider>
-          <CartProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </CartProvider>
-        </AuthProvider>
+        <CartProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </CartProvider>
       </body>
     </html>
   );
