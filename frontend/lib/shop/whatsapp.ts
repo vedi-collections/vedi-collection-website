@@ -6,7 +6,7 @@ import { formatINR } from "./money";
 import type { CartLine, Product } from "./types";
 
 const SELLER_WHATSAPP_NUMBER =
-  process.env.NEXT_PUBLIC_SELLER_WHATSAPP_NUMBER ?? "919876543210";
+  process.env.NEXT_PUBLIC_SELLER_WHATSAPP_NUMBER ?? "919968835942";
 
 /** Build a wa.me deep link for an arbitrary prefilled message. */
 export function waLink(message: string): string {

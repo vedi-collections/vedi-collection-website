@@ -1,4 +1,3 @@
-import { AccountButton } from "@/components/store/AccountButton";
 import { Brand } from "@/components/layout/Brand";
 import { Container } from "@/components/layout/Container";
 import { BagIcon, WhatsAppIcon } from "@/components/ui/icons";
@@ -50,8 +49,6 @@ export function StoreHeader({ main, onMain, count, showCount, onOpenCart }: Stor
             >
               <WhatsAppIcon className="h-[18px] w-[18px]" /> Chat with us
             </a>
-
-            <AccountButton />
 
             <button
               type="button"

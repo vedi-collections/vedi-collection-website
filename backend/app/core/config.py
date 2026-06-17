@@ -1,15 +1,21 @@
 """Application configuration, loaded from environment (12-factor)."""
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Repo-root .env, resolved absolutely so it loads no matter the CWD
+# (running uvicorn/alembic/seed from backend/ would otherwise miss it).
+# In Docker this path won't exist and env vars are passed directly — harmless.
+_ROOT_ENV = Path(__file__).resolve().parents[3] / ".env"
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=_ROOT_ENV,
         env_file_encoding="utf-8",
-        extra="ignore",  # ignore Phase 4+ vars (SMTP_*, GOOGLE_*, ...) not modelled yet
+        extra="ignore",  # ignore vars not modelled yet (GOOGLE_*, STORAGE_* extras, ...)
     )
 
     # --- Database ---
@@ -17,26 +23,26 @@ class Settings(BaseSettings):
 
     # --- JWT ---
     JWT_SECRET: str = "dev-access-secret-change-me"
-    JWT_REFRESH_SECRET: str = "dev-refresh-secret-change-me"
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TTL_MIN: int = 30
-    JWT_REFRESH_TTL_DAYS: int = 7
 
-    # --- Seller seed ---
-    SELLER_EMAIL: str = "seller@vedicollections.example"
-    SELLER_PASSWORD: str = "change-me-please"
-    SELLER_WHATSAPP_NUMBER: str = "919999999999"
+    # --- Admin seed (the first admin, created by scripts/seed_admin.py) ---
+    ADMIN_NAME: str = "Vedi Admin"
+    ADMIN_EMAIL: str = "admin@vedicollections.example"
+    ADMIN_PASSWORD: str = "change-me-please"
+    # The single store owner. Every admin can manage products; only the owner
+    # may manage the admin team (add / deactivate admins). Compared case-
+    # insensitively against the signed-in admin's email.
+    OWNER_EMAIL: str = "vedicollections.official@gmail.com"
+    # Boutique WhatsApp number for storefront "Order on WhatsApp" deep links.
+    SELLER_WHATSAPP_NUMBER: str = "919968835942"
 
     # --- CORS ---
     FRONTEND_ORIGIN: str = "http://localhost:3000"
 
-    # --- Meta Graph API / catalog sync ---
-    META_ACCESS_TOKEN: str = ""
-    META_CATALOG_ID: str = ""
-    META_GRAPH_API_VERSION: str = "v21.0"
-    META_GRAPH_API_BASE_URL: str = "https://graph.facebook.com"
-    CATALOG_SYNC_INTERVAL_MINUTES: int = 30
-    CATALOG_SYNC_SCHEDULER_ENABLED: bool = False
+    # --- Scheduler (in-process APScheduler) ---
+    # No jobs run until Phase 5 registers the scheduled→live launch job.
+    SCHEDULER_ENABLED: bool = False
 
     # --- S3-compatible object storage ---
     STORAGE_ENDPOINT: str = ""

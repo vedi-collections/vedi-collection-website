@@ -35,6 +35,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       { name: "Deep Maroon", c1: "#7A2640", c2: "#42101F" },
       { name: "Wine", c1: "#5B1428", c2: "#2E0A14" }
     ],
+    stock: 6,
     imageUrl: null,
     isActive: true,
     bestSeller: true
@@ -65,6 +66,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       { name: "Emerald Green", c1: "#1E6B52", c2: "#0C3A2C" },
       { name: "Royal Blue", c1: "#1E3F6B", c2: "#0C1E3A" }
     ],
+    stock: 4,
     imageUrl: null,
     isActive: true
   },
@@ -94,6 +96,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       { name: "Powder Blue", c1: "#9DB8CC", c2: "#5E7E96", light: true },
       { name: "Blush Pink", c1: "#D7A9B0", c2: "#A56F78", light: true }
     ],
+    stock: 10,
     imageUrl: null,
     isActive: true,
     newArrival: true
@@ -121,6 +124,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       occasion: "Festive & daily"
     },
     variants: [{ name: "Mustard", c1: "#D49A2E", c2: "#8A5A14" }],
+    stock: 8,
     imageUrl: null,
     isActive: true
   },
@@ -147,6 +151,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       occasion: "Festive & wedding"
     },
     variants: [{ name: "Ivory & Gold", c1: "#E6D5AE", c2: "#C2A05E", light: true }],
+    stock: 5,
     imageUrl: null,
     isActive: true,
     newArrival: true
@@ -174,6 +179,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       occasion: "Festive & daily"
     },
     variants: [{ name: "Sunset Orange", c1: "#D96A2B", c2: "#9A3A18" }],
+    stock: 12,
     imageUrl: null,
     isActive: true,
     bestSeller: true
@@ -204,6 +210,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       { name: "Steel Grey & Sky Blue", c1: "#5E7282", c2: "#2E3A44" },
       { name: "Charcoal & White", c1: "#3C434B", c2: "#1C2126" }
     ],
+    stock: 9,
     imageUrl: null,
     isActive: true,
     bestSeller: true
@@ -231,6 +238,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       occasion: "Resort & occasion"
     },
     variants: [{ name: "Natural Beige & White", c1: "#C7B299", c2: "#8A744F", light: true }],
+    stock: 3,
     imageUrl: null,
     isActive: true
   },
@@ -257,6 +265,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       occasion: "Office & daily"
     },
     variants: [{ name: "Navy & Cream", c1: "#2E4A78", c2: "#16263F" }],
+    stock: 15,
     imageUrl: null,
     isActive: true
   },
@@ -283,6 +292,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       occasion: "Office & formal"
     },
     variants: [{ name: "Crisp White", c1: "#E8E4D8", c2: "#B8B09A", light: true }],
+    stock: 20,
     imageUrl: null,
     isActive: true,
     newArrival: true
@@ -310,6 +320,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       occasion: "Daily & travel"
     },
     variants: [{ name: "Olive Green", c1: "#5A6B42", c2: "#2C361E" }],
+    stock: 7,
     imageUrl: null,
     isActive: true
   },
@@ -336,6 +347,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
       occasion: "Office & occasion"
     },
     variants: [{ name: "Slate Grey", c1: "#6B7280", c2: "#333A45" }],
+    stock: 0,
     imageUrl: null,
     isActive: true
   }

@@ -26,15 +26,15 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg2://vedi:vedi@db:5432/vedi
       JWT_SECRET: ${JWT_SECRET:-dev-access-secret-change-me}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-refresh-secret-change-me}
       JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
       JWT_ACCESS_TTL_MIN: ${JWT_ACCESS_TTL_MIN:-30}
-      JWT_REFRESH_TTL_DAYS: ${JWT_REFRESH_TTL_DAYS:-7}
-      SELLER_EMAIL: ${SELLER_EMAIL:-seller@vedicollections.example}
-      SELLER_PASSWORD: ${SELLER_PASSWORD:-change-me-please}
-      SELLER_WHATSAPP_NUMBER: ${SELLER_WHATSAPP_NUMBER:-919999999999}
+      # First-admin seed (scripts/seed_admin.py). No public registration.
+      ADMIN_NAME: ${ADMIN_NAME:-Vedi Admin}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@vedicollections.example}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-please}
+      SELLER_WHATSAPP_NUMBER: ${SELLER_WHATSAPP_NUMBER:-919968835942}
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
-      # Phase 2+/4 secrets are optional in Phase 1; pass through if set.
+      # Phase 2+ secrets are optional in Phase 1; pass through if set.
       META_ACCESS_TOKEN: ${META_ACCESS_TOKEN:-}
       META_CATALOG_ID: ${META_CATALOG_ID:-}
       META_GRAPH_API_VERSION: ${META_GRAPH_API_VERSION:-v21.0}
@@ -61,7 +61,7 @@ services:
     environment:
       # Browser-visible; defaults to the host-mapped backend port.
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
-      NEXT_PUBLIC_SELLER_WHATSAPP_NUMBER: ${NEXT_PUBLIC_SELLER_WHATSAPP_NUMBER:-919876543210}
+      NEXT_PUBLIC_SELLER_WHATSAPP_NUMBER: ${NEXT_PUBLIC_SELLER_WHATSAPP_NUMBER:-919968835942}
       # Enable file-watching hot reload inside the container.
       WATCHPACK_POLLING: "true"
     ports:

@@ -16,7 +16,7 @@ down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
-user_role = postgresql.ENUM("customer", "seller", name="user_role", create_type=False)
+user_role = postgresql.ENUM("customer", "admin", name="user_role", create_type=False)
 order_status = postgresql.ENUM(
     "new", "confirmed", "shipped", "cancelled", name="order_status", create_type=False
 )
@@ -30,13 +30,12 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column("id", sa.UUID(), nullable=False),
+        sa.Column("name", sa.String(length=255), nullable=False),
         sa.Column("email", sa.String(length=320), nullable=False),
-        sa.Column("password_hash", sa.String(length=255), nullable=True),
-        sa.Column("google_sub", sa.String(length=255), nullable=True),
+        sa.Column("password_hash", sa.String(length=255), nullable=False),
         sa.Column("role", user_role, nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("google_sub"),
     )
     op.create_index(op.f("ix_users_email"), "users", ["email"], unique=True)
 

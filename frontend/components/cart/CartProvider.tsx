@@ -71,22 +71,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const add = useCallback((product: Product, opts?: { size?: string; qty?: number }) => {
     const size = opts?.size;
     const qty = opts?.qty ?? 1;
+    const stock = product.stock ?? Infinity;
+    if (stock <= 0) return; // out of stock — nothing to add
     const key = lineKey(product.id, size);
     setLines((current) => {
       const existing = current.find((l) => lineKey(l.product.id, l.size) === key);
       if (existing) {
+        // Never let the ordered quantity exceed what is in stock.
         return current.map((l) =>
-          lineKey(l.product.id, l.size) === key ? { ...l, qty: l.qty + qty } : l
+          lineKey(l.product.id, l.size) === key
+            ? { ...l, qty: Math.min(l.qty + qty, stock) }
+            : l
         );
       }
-      return [...current, { product, qty, size }];
+      return [...current, { product, qty: Math.min(qty, stock), size }];
     });
   }, []);
 
   const changeQty = useCallback((key: string, delta: number) => {
     setLines((current) =>
       current
-        .map((l) => (lineKey(l.product.id, l.size) === key ? { ...l, qty: l.qty + delta } : l))
+        .map((l) =>
+          lineKey(l.product.id, l.size) === key
+            ? { ...l, qty: Math.min(l.qty + delta, l.product.stock ?? Infinity) }
+            : l
+        )
         .filter((l) => l.qty > 0)
     );
   }, []);

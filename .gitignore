@@ -17,6 +17,7 @@ venv/
 # ---- Node / Next.js (frontend) ----
 node_modules/
 .next/
+.next-root-old/
 out/
 *.tsbuildinfo
 npm-debug.log*

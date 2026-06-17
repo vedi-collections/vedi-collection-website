@@ -12,8 +12,10 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import ACCESS, decode_token
+from app.models.enums import UserRole
 from app.models.user import User
 
 _bearer = HTTPBearer(auto_error=True)
@@ -44,7 +46,7 @@ def get_current_user(
         raise _CREDENTIALS_EXC from exc
 
     user = db.get(User, user_id)
-    if user is None:
+    if user is None or not user.is_active:
         raise _CREDENTIALS_EXC
     return user
 
@@ -61,3 +63,36 @@ def require_role(role: str) -> Callable[..., User]:
         return user
 
     return _dependency
+
+
+def require_admin(user: User = Depends(get_current_user)) -> User:
+    """403 unless the authenticated user is an admin. Guards every /admin route.
+
+    The role is read from the DB-backed User (loaded by get_current_user), never
+    from a hardcoded email list.
+    """
+    if user.role != UserRole.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admins only",
+        )
+    return user
+
+
+def email_is_owner(email: str) -> bool:
+    """True if `email` is the store owner (settings.OWNER_EMAIL), case-insensitive."""
+    return email.strip().lower() == settings.OWNER_EMAIL.strip().lower()
+
+
+def require_owner(user: User = Depends(require_admin)) -> User:
+    """403 unless the authenticated admin is the store owner.
+
+    Only the owner may manage the admin team (add / deactivate admins). Every
+    other admin keeps full product access.
+    """
+    if not email_is_owner(user.email):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only the store owner can manage the team.",
+        )
+    return user

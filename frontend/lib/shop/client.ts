@@ -1,40 +1,89 @@
 // Shop data access — the SINGLE seam between the storefront and its data source.
 //
-// Today every function reads from the in-memory mock modules. When the backend
-// `/shop/*` endpoints are ready, swap each function body to `fetch(`${API_URL}…`)`
-// and map the response into the Product shape — callers (server components) and
-// components stay unchanged. Functions are async to mirror that future I/O.
+// Backed by the live backend API (GET /products), mapping the API product shape
+// into the storefront `Product` view-model. The public API only returns
+// live + active products, so the storefront shows exactly what's launched.
+// Fields the API doesn't carry yet (audience/category/MRP/badges) get defaults.
 
-import { MOCK_PRODUCTS, type MockProduct } from "./mock-products";
+import { API_URL } from "@/lib/api";
+
 import { COLLECTIONS, PRICE_BUCKETS } from "./mock-collections";
 import type { Collection, Product, ProductFilters, ProductSort } from "./types";
 
-const CATEGORY_SLUGS = new Set(["suits", "pant-shirt-cloth", "safari-cloth"]);
+type ApiAudience = "women" | "men";
 
-function isActive(p: MockProduct): boolean {
-  return p.isActive;
+type ApiProduct = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number; // whole rupees (INR)
+  stock_quantity: number;
+  images: string[];
+  audience: ApiAudience;
+  subcategory: string | null;
+};
+
+/** Backend audience (women/men) -> storefront audience (ladies/gents). */
+const AUDIENCE_MAP: Record<ApiAudience, Product["audience"]> = {
+  women: "ladies",
+  men: "gents",
+};
+
+/** Slugify a sub-category for URL/filter matching, e.g. "Safari Cloth" -> "safari-cloth". */
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
-/** Whether a product belongs to a given collection slug. */
-function productInCollection(p: MockProduct, slug: string): boolean {
-  switch (slug) {
-    case "all-products":
-      return isActive(p);
-    case "best-sellers":
-      return Boolean(p.bestSeller);
-    case "new-arrivals":
-      return Boolean(p.newArrival);
-    case "ladies":
-      return p.audience === "ladies";
-    case "gents":
-      return p.audience === "gents";
-    default:
-      return CATEGORY_SLUGS.has(slug) ? p.categorySlug === slug : false;
+/** Map an API product into the storefront view-model. Defaults fill the richer
+ *  fields the API doesn't carry yet (MRP/badges/attributes). */
+function mapApiProduct(p: ApiProduct): Product {
+  const media = p.images ?? [];
+  const image = media[0] ?? null;
+  const subcategory = p.subcategory?.trim() || null;
+  return {
+    id: p.id,
+    retailerId: p.id,
+    name: p.name,
+    shade: p.description ?? "",
+    audience: AUDIENCE_MAP[p.audience] ?? "ladies",
+    category: subcategory ?? "Collection",
+    categorySlug: subcategory ? slugify(subcategory) : "all",
+    colorFamilies: [],
+    priceMinor: p.price * 100, // API stores whole rupees; storefront formats paise (/100)
+    mrpMinor: null,
+    currency: "INR",
+    tag: null,
+    sizes: [],
+    unit: "",
+    attributes: { fabric: "", includes: "", care: "" },
+    variants: [{ name: p.name, c1: "#571b2c", c2: "#3e1220", imageUrl: image }],
+    imageUrl: image,
+    media,
+    stock: p.stock_quantity,
+    isActive: true,
+  };
+}
+
+/** All live products from the backend. Returns [] if the API is unreachable so
+ *  SSR never crashes — the storefront just shows no products. */
+async function fetchLiveProducts(): Promise<Product[]> {
+  try {
+    const res = await fetch(`${API_URL}/products`, { cache: "no-store" });
+    if (!res.ok) return [];
+    const data = (await res.json()) as { products: ApiProduct[] };
+    return data.products.map(mapApiProduct);
+  } catch {
+    return [];
   }
 }
 
-function matchesFilters(p: MockProduct, filters: ProductFilters): boolean {
-  if (filters.collection && !productInCollection(p, filters.collection)) return false;
+function matchesFilters(p: Product, filters: ProductFilters): boolean {
+  if (filters.collection === "ladies" && p.audience !== "ladies") return false;
+  if (filters.collection === "gents" && p.audience !== "gents") return false;
   if (filters.categorySlug && p.categorySlug !== filters.categorySlug) return false;
   if (filters.audience && p.audience !== filters.audience) return false;
   if (filters.colorFamily && !p.colorFamilies.includes(filters.colorFamily)) return false;
@@ -47,38 +96,45 @@ function matchesFilters(p: MockProduct, filters: ProductFilters): boolean {
   }
   if (filters.q) {
     const q = filters.q.toLowerCase();
-    const haystack = `${p.name} ${p.shade} ${p.category}`.toLowerCase();
-    if (!haystack.includes(q)) return false;
+    if (!`${p.name} ${p.shade} ${p.category}`.toLowerCase().includes(q)) return false;
   }
   return true;
 }
 
-function sortProducts(list: MockProduct[], sort: ProductSort | undefined): MockProduct[] {
+function sortProducts(list: Product[], sort: ProductSort | undefined): Product[] {
   const out = [...list];
   switch (sort) {
     case "price-asc":
       return out.sort((a, b) => a.priceMinor - b.priceMinor);
     case "price-desc":
       return out.sort((a, b) => b.priceMinor - a.priceMinor);
-    case "newest":
-      return out.sort((a, b) => Number(Boolean(b.newArrival)) - Number(Boolean(a.newArrival)));
     case "popularity":
+    case "newest":
     default:
-      return out; // mock order = curated popularity
+      return out; // API order (newest first) is the default
   }
 }
 
 export async function getProducts(filters: ProductFilters = {}): Promise<Product[]> {
-  const filtered = MOCK_PRODUCTS.filter(isActive).filter((p) => matchesFilters(p, filters));
-  return sortProducts(filtered, filters.sort);
+  const live = await fetchLiveProducts();
+  return sortProducts(
+    live.filter((p) => matchesFilters(p, filters)),
+    filters.sort,
+  );
 }
 
 export async function getProduct(id: string): Promise<Product | null> {
-  return MOCK_PRODUCTS.find((p) => p.id === id && p.isActive) ?? null;
+  try {
+    const res = await fetch(`${API_URL}/products/${id}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    return mapApiProduct((await res.json()) as ApiProduct);
+  } catch {
+    return null;
+  }
 }
 
 export async function getAllProductIds(): Promise<string[]> {
-  return MOCK_PRODUCTS.filter(isActive).map((p) => p.id);
+  return (await fetchLiveProducts()).map((p) => p.id);
 }
 
 export async function getCollections(): Promise<Collection[]> {
@@ -90,19 +146,17 @@ export async function searchProducts(q: string, filters: ProductFilters = {}): P
 }
 
 export async function getBestSellers(): Promise<Product[]> {
-  return getProducts({ collection: "best-sellers" });
+  return getProducts({});
 }
 
 export async function getNewArrivals(): Promise<Product[]> {
-  return getProducts({ collection: "new-arrivals" });
+  return getProducts({ sort: "newest" });
 }
 
-/** Products related to `product` (same category, excluding itself). */
+/** Products related to `product` (other live products, excluding itself). */
 export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {
-  const same = MOCK_PRODUCTS.filter(
-    (p) => p.isActive && p.id !== product.id && p.categorySlug === product.categorySlug
-  );
-  return same.slice(0, limit);
+  const live = await fetchLiveProducts();
+  return live.filter((p) => p.id !== product.id).slice(0, limit);
 }
 
 /** Available facet values for a set of products (drives the filter sidebar). */
@@ -118,6 +172,6 @@ export function getFacets(products: Product[]): {
   }
   return {
     colorFamilies: [...colors],
-    categories: [...categories].map(([slug, label]) => ({ slug, label }))
+    categories: [...categories].map(([slug, label]) => ({ slug, label })),
   };
 }

@@ -23,6 +23,10 @@
   --color-primary-dark: 62 15 30; /* #3e0f1e */
   --color-primary-fg: 250 241 220; /* #faf1dc */
 
+  --color-cta: 165 38 55; /* #a52637 deep red, maroon-tinted — "Add to bag" CTA */
+  --color-cta-hover: 138 30 47; /* #8a1e2f */
+  --color-cta-fg: 255 255 255; /* #ffffff */
+
   --color-accent: 185 138 60; /* #b98a3c gold */
   --color-accent-light: 216 179 106; /* #d8b36a */
   --color-accent-pale: 235 217 168; /* #ebd9a8 */

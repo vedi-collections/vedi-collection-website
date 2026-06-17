@@ -9,7 +9,6 @@ from app.core.config import settings
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 ACCESS = "access"
-REFRESH = "refresh"
 
 
 def hash_password(password: str) -> str:
@@ -20,41 +19,21 @@ def verify_password(password: str, password_hash: str) -> bool:
     return pwd_context.verify(password, password_hash)
 
 
-def _create_token(
-    *, subject: uuid.UUID, role: str, secret: str, expires_delta: timedelta, token_type: str
-) -> str:
+def create_access_token(subject: uuid.UUID, role: str, *, is_owner: bool = False) -> str:
     now = datetime.now(UTC)
     payload = {
         "sub": str(subject),
         "role": role,
-        "type": token_type,
+        # UX-only hint so the dashboard can show/hide team controls. Real
+        # authorization is always enforced server-side by require_owner.
+        "is_owner": is_owner,
+        "type": ACCESS,
         "iat": now,
-        "exp": now + expires_delta,
+        "exp": now + timedelta(minutes=settings.JWT_ACCESS_TTL_MIN),
     }
-    return jwt.encode(payload, secret, algorithm=settings.JWT_ALGORITHM)
+    return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 
 
-def create_access_token(subject: uuid.UUID, role: str) -> str:
-    return _create_token(
-        subject=subject,
-        role=role,
-        secret=settings.JWT_SECRET,
-        expires_delta=timedelta(minutes=settings.JWT_ACCESS_TTL_MIN),
-        token_type=ACCESS,
-    )
-
-
-def create_refresh_token(subject: uuid.UUID, role: str) -> str:
-    return _create_token(
-        subject=subject,
-        role=role,
-        secret=settings.JWT_REFRESH_SECRET,
-        expires_delta=timedelta(days=settings.JWT_REFRESH_TTL_DAYS),
-        token_type=REFRESH,
-    )
-
-
-def decode_token(token: str, *, refresh: bool = False) -> dict:
-    """Decode and verify a JWT. Raises jwt.PyJWTError on any failure."""
-    secret = settings.JWT_REFRESH_SECRET if refresh else settings.JWT_SECRET
-    return jwt.decode(token, secret, algorithms=[settings.JWT_ALGORITHM])
+def decode_token(token: str) -> dict:
+    """Decode and verify an access JWT. Raises jwt.PyJWTError on any failure."""
+    return jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
