@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Cormorant_Garamond, Karla } from "next/font/google";
+import Script from "next/script";
 
 import { CartProvider } from "@/components/cart/CartProvider";
 import { ToastProvider } from "@/components/ui/Toast";
+import { GOOGLE_ADS_ID } from "@/lib/analytics/gtag";
 import "./globals.css";
 
 // Fonts loaded via next/font (self-hosted, no render-blocking @import) and
@@ -35,6 +37,19 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en" className={`${cormorant.variable} ${karla.variable}`}>
       <body>
+        {/* Google tag (gtag.js) — Google Ads conversion tracking, sitewide.
+            afterInteractive: loads once the page is interactive, on every route. */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-tag-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GOOGLE_ADS_ID}');`}
+        </Script>
+
         {/* Client providers wrap server-rendered children: only the provider
             boundary is client; pages below stay server components. */}
         <CartProvider>

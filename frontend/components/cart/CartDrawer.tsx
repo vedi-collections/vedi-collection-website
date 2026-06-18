@@ -7,6 +7,7 @@ import { ProductImage } from "@/components/ui/ProductImage";
 import { QtyStepper } from "@/components/ui/QtyStepper";
 import { buttonClasses } from "@/components/ui/Button";
 import { WhatsAppIcon, CloseIcon, TrashIcon } from "@/components/ui/icons";
+import { claimOnce, newOrderId, trackPurchaseConversion } from "@/lib/analytics/gtag";
 import { formatINR } from "@/lib/shop/money";
 import { PROMO } from "@/lib/shop/promo-config";
 import { waCartLink } from "@/lib/shop/whatsapp";
@@ -27,6 +28,21 @@ export function CartDrawer() {
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [isOpen, closeCart]);
+
+  // Google Ads purchase conversion: fired when the customer starts checkout on
+  // WhatsApp (Vedi's checkout is a wa.me hand-off, so this click is the order
+  // signal). claimOnce de-dupes the same cart, so a double-click or refresh
+  // won't double-count. Tracking only — the WhatsApp link still navigates.
+  function handleWhatsAppCheckout() {
+    const signature =
+      lines.map((l) => `${l.product.id}:${l.size ?? ""}:${l.qty}`).join("|") + `#${subtotalMinor}`;
+    if (!claimOnce(signature)) return;
+    trackPurchaseConversion({
+      valueMinor: subtotalMinor,
+      currency: "INR",
+      transactionId: newOrderId()
+    });
+  }
 
   if (!isOpen) return null;
 
@@ -140,6 +156,7 @@ export function CartDrawer() {
                 href={waCartLink(lines, subtotalMinor)}
                 target="_blank"
                 rel="noreferrer"
+                onClick={handleWhatsAppCheckout}
                 className={buttonClasses("whatsapp", "lg", "mt-3.5 w-full")}
               >
                 <WhatsAppIcon className="h-5 w-5" /> Checkout on WhatsApp

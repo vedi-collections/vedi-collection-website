@@ -38,7 +38,15 @@ class Settings(BaseSettings):
     SELLER_WHATSAPP_NUMBER: str = "919968835942"
 
     # --- CORS ---
+    # Comma-separated list of allowed browser origins, no trailing slash, e.g.
+    # "https://vedicollection.com,https://www.vedicollection.com". Parsed by
+    # `cors_origins`. The Origin header browsers send never has a trailing slash,
+    # so we strip any to avoid a silent mismatch.
     FRONTEND_ORIGIN: str = "http://localhost:3000"
+
+    @property
+    def cors_origins(self) -> list[str]:
+        return [o.strip().rstrip("/") for o in self.FRONTEND_ORIGIN.split(",") if o.strip()]
 
     # --- Scheduler (in-process APScheduler) ---
     # No jobs run until Phase 5 registers the scheduled→live launch job.
