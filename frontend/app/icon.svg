@@ -3,6 +3,8 @@
   <rect width="64" height="64" rx="14" fill="#571b2c"/>
   <!-- Thin gold frame (brand --color-accent #b98a3c) -->
   <rect x="4.5" y="4.5" width="55" height="55" rx="10.5" fill="none" stroke="#b98a3c" stroke-width="1.5" opacity="0.6"/>
-  <!-- Serif "V" monogram, thick-left / thin-right to echo the Cormorant wordmark -->
-  <path d="M11 18 L24 18 L32 36 L44 18 L51 18 L36 47 L30 47 Z" fill="#e3c06f"/>
+  <!-- Serif "V": thick-left / thin-right, echoing the Cormorant wordmark -->
+  <path d="M7 18 L15.5 18 L20.7 36 L28.5 18 L33 18 L23.3 47 L19.3 47 Z" fill="#e3c06f"/>
+  <!-- "C" opening right, with round ball-terminals to pair with the boutique serif -->
+  <path d="M52.4 23.7 A11.5 11.5 0 1 0 52.4 41.3" fill="none" stroke="#e3c06f" stroke-width="6" stroke-linecap="round"/>
 </svg>
