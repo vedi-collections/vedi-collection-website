@@ -15,9 +15,9 @@ import { currentUserId, isOwner } from "@/lib/admin/auth";
 import { cn } from "@/lib/cn";
 
 const inputClass =
-  "w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-text outline-none " +
+  "w-full rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-text outline-none " +
   "focus:border-primary focus:ring-2 focus:ring-accent/40";
-const labelClass = "block text-sm font-medium text-heading";
+const labelClass = "block text-base font-medium text-heading";
 
 type TeamForm = { name: string; email: string; password: string };
 const EMPTY: TeamForm = { name: "", email: "", password: "" };
@@ -99,17 +99,17 @@ export function TeamSection() {
 
   return (
     <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
-      <h2 className="font-serif text-lg font-semibold text-heading">
-        Team <span className="text-sm font-normal text-muted">({admins.length})</span>
+      <h2 className="font-serif text-xl font-semibold text-heading">
+        Team <span className="text-base font-normal text-muted">({admins.length})</span>
       </h2>
-      <p className="mt-1 text-sm text-muted">
+      <p className="mt-1 text-base text-muted">
         Admins who can sign in and manage the store.
         {!owner && " Only the store owner can add or deactivate admins."}
       </p>
 
       <div className="mt-4 overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead className="text-xs uppercase tracking-wide text-muted-soft">
+        <table className="w-full text-left text-base">
+          <thead className="text-sm uppercase tracking-wide text-muted-soft">
             <tr className="border-b border-line">
               <th className="py-2 pr-3">Name</th>
               <th className="py-2 pr-3">Email</th>
@@ -122,13 +122,13 @@ export function TeamSection() {
               <tr key={a.id} className={cn("border-b border-line/60", !a.is_active && "opacity-55")}>
                 <td className="py-2.5 pr-3 font-medium text-heading">
                   {a.name}
-                  {a.id === selfId && <span className="ml-2 text-xs text-accent">you</span>}
+                  {a.id === selfId && <span className="ml-2 text-sm text-accent">you</span>}
                 </td>
                 <td className="py-2.5 pr-3">{a.email}</td>
                 <td className="py-2.5 pr-3">
                   <span
                     className={cn(
-                      "rounded-full px-2 py-0.5 text-xs font-semibold",
+                      "rounded-full px-2.5 py-0.5 text-sm font-semibold",
                       a.is_active ? "bg-whatsapp/10 text-whatsapp-dark" : "bg-primary/10 text-primary",
                     )}
                   >
@@ -140,12 +140,12 @@ export function TeamSection() {
                     <button
                       type="button"
                       onClick={() => onToggle(a)}
-                      className="text-sm font-semibold text-muted hover:text-primary"
+                      className="text-base font-semibold text-muted hover:text-primary"
                     >
                       {a.is_active ? "Deactivate" : "Reactivate"}
                     </button>
                   ) : (
-                    <span className="text-xs text-muted-soft">—</span>
+                    <span className="text-sm text-muted-soft">—</span>
                   )}
                 </td>
               </tr>
@@ -171,16 +171,16 @@ export function TeamSection() {
         </label>
 
         {error && (
-          <p role="alert" className="rounded-lg bg-primary/5 px-3 py-2 text-sm text-primary sm:col-span-3">
+          <p role="alert" className="rounded-lg bg-primary/5 px-3 py-2 text-base text-primary sm:col-span-3">
             {error}
           </p>
         )}
         {notice && !error && (
-          <p className="rounded-lg bg-whatsapp/10 px-3 py-2 text-sm text-whatsapp-dark sm:col-span-3">{notice}</p>
+          <p className="rounded-lg bg-whatsapp/10 px-3 py-2 text-base text-whatsapp-dark sm:col-span-3">{notice}</p>
         )}
 
         <div className="sm:col-span-3">
-          <button type="submit" disabled={busy} className={buttonClasses("primary", "md")}>
+          <button type="submit" disabled={busy} className={buttonClasses("primary", "md", "!text-base")}>
             {busy ? "Adding…" : "Add admin"}
           </button>
         </div>

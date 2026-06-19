@@ -26,6 +26,7 @@ const config: Config = {
           dark: c("--color-primary-dark"),
           fg: c("--color-primary-fg")
         },
+        footer: c("--color-footer"),
         cta: {
           DEFAULT: c("--color-cta"),
           hover: c("--color-cta-hover"),
@@ -54,7 +55,7 @@ const config: Config = {
         }
       },
       fontFamily: {
-        serif: ["var(--font-cormorant)", "Georgia", "serif"],
+        serif: ["var(--font-lora)", "Georgia", "serif"],
         sans: ["var(--font-karla)", "Arial", "sans-serif"]
       },
       maxWidth: {

@@ -16,16 +16,16 @@ export function PriceTag({ priceMinor, mrpMinor = null, size = "sm", className }
 
   return (
     <div className={cn("flex flex-wrap items-baseline gap-x-2 gap-y-1", className)}>
-      <span className={cn("font-bold text-heading", big ? "text-2xl" : "text-sm")}>
+      <span className={cn("font-bold text-heading", big ? "text-2xl" : "text-base")}>
         {formatINR(priceMinor)}
       </span>
       {mrpMinor && mrpMinor > priceMinor && (
-        <span className={cn("text-muted-strike line-through", big ? "text-sm" : "text-xs")}>
+        <span className={cn("text-muted-strike line-through", big ? "text-base" : "text-sm")}>
           {formatINR(mrpMinor)}
         </span>
       )}
       {pct !== null && (
-        <span className={cn("font-bold text-whatsapp", big ? "text-sm" : "text-xs")}>
+        <span className={cn("font-bold text-whatsapp", big ? "text-base" : "text-sm")}>
           {pct}% off
         </span>
       )}

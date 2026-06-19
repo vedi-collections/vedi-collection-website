@@ -47,9 +47,9 @@ const STATUS_STYLE: Record<ProductStatus, string> = {
 };
 
 const inputClass =
-  "w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-text outline-none " +
+  "w-full rounded-lg border border-line bg-surface px-3.5 py-2.5 text-base text-text outline-none " +
   "focus:border-primary focus:ring-2 focus:ring-accent/40";
-const labelClass = "block text-sm font-medium text-heading";
+const labelClass = "block text-base font-medium text-heading";
 
 type FormState = {
   name: string;
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
   }
 
   if (!ready) {
-    return <main className="grid min-h-screen place-items-center text-sm text-muted">Loading…</main>;
+    return <main className="grid min-h-screen place-items-center text-base text-muted">Loading…</main>;
   }
 
   const nameById = new Map(products.map((p) => [p.id, p.name]));
@@ -241,8 +241,8 @@ export default function AdminDashboard() {
         <aside className="shrink-0 border-b border-line bg-surface lg:sticky lg:top-0 lg:h-screen lg:w-60 lg:border-b-0 lg:border-r">
           <div className="flex h-full flex-col px-4 py-5 lg:px-5 lg:py-6">
             <div className="px-1">
-              <h1 className="font-serif text-xl font-semibold text-primary">Vedi Collections</h1>
-              <p className="text-xs uppercase tracking-[0.2em] text-accent">Admin</p>
+              <h1 className="font-serif text-2xl font-semibold text-primary">Vedi Collections</h1>
+              <p className="text-sm uppercase tracking-[0.2em] text-accent">Admin</p>
             </div>
 
             <nav className="mt-5 flex gap-1 overflow-x-auto lg:mt-8 lg:flex-col lg:overflow-visible">
@@ -256,18 +256,18 @@ export default function AdminDashboard() {
                     onClick={() => setView(item.id)}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition",
+                      "flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-base font-medium transition",
                       active
                         ? "bg-primary/10 text-primary"
                         : "text-muted hover:bg-surface-alt hover:text-primary",
                     )}
                   >
-                    <item.icon className="h-[18px] w-[18px]" />
+                    <item.icon className="h-5 w-5" />
                     {item.label}
                     {count !== undefined && (
                       <span
                         className={cn(
-                          "ml-auto hidden text-xs lg:inline",
+                          "ml-auto hidden text-sm lg:inline",
                           active ? "text-primary/70" : "text-muted-soft",
                         )}
                       >
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
             <button
               type="button"
               onClick={signOut}
-              className={cn(buttonClasses("outline", "sm"), "mt-5 w-full lg:mt-auto")}
+              className={cn(buttonClasses("outline", "sm"), "mt-5 w-full !text-sm lg:mt-auto")}
             >
               Sign out
             </button>
@@ -291,13 +291,13 @@ export default function AdminDashboard() {
 
         {/* ---- Main content ---- */}
         <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-          <h2 className="mb-5 font-serif text-2xl font-semibold text-heading">{activeLabel}</h2>
+          <h2 className="mb-5 font-serif text-3xl font-semibold text-heading">{activeLabel}</h2>
 
           {view === "products" && (
             <div className="space-y-6">
               {/* ---- Create / edit form ---- */}
               <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
-                <h2 className="font-serif text-lg font-semibold text-heading">
+                <h2 className="font-serif text-xl font-semibold text-heading">
                   {editingId ? "Edit product" : "New product"}
                 </h2>
 
@@ -383,20 +383,20 @@ export default function AdminDashboard() {
                   </div>
 
                   {error && (
-                    <p role="alert" className="rounded-lg bg-primary/5 px-3 py-2 text-sm text-primary sm:col-span-2">
+                    <p role="alert" className="rounded-lg bg-primary/5 px-3 py-2 text-base text-primary sm:col-span-2">
                       {error}
                     </p>
                   )}
                   {notice && !error && (
-                    <p className="rounded-lg bg-whatsapp/10 px-3 py-2 text-sm text-whatsapp-dark sm:col-span-2">{notice}</p>
+                    <p className="rounded-lg bg-whatsapp/10 px-3 py-2 text-base text-whatsapp-dark sm:col-span-2">{notice}</p>
                   )}
 
                   <div className="flex gap-3 sm:col-span-2">
-                    <button type="submit" disabled={saving} className={buttonClasses("primary", "md")}>
+                    <button type="submit" disabled={saving} className={buttonClasses("primary", "md", "!text-base")}>
                       {saving ? "Saving…" : editingId ? "Save changes" : "Create product"}
                     </button>
                     {editingId && (
-                      <button type="button" onClick={cancelEdit} className={buttonClasses("ghost", "md")}>
+                      <button type="button" onClick={cancelEdit} className={buttonClasses("ghost", "md", "!text-base")}>
                         Cancel
                       </button>
                     )}
@@ -406,16 +406,16 @@ export default function AdminDashboard() {
 
               {/* ---- Product list ---- */}
               <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
-                <h2 className="font-serif text-lg font-semibold text-heading">
-                  Products <span className="text-sm font-normal text-muted">({products.length})</span>
+                <h2 className="font-serif text-xl font-semibold text-heading">
+                  Products <span className="text-base font-normal text-muted">({products.length})</span>
                 </h2>
 
                 {products.length === 0 ? (
-                  <p className="mt-4 text-sm text-muted">No products yet. Create your first one above.</p>
+                  <p className="mt-4 text-base text-muted">No products yet. Create your first one above.</p>
                 ) : (
                   <div className="mt-4 overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                      <thead className="text-xs uppercase tracking-wide text-muted-soft">
+                    <table className="w-full text-left text-base">
+                      <thead className="text-sm uppercase tracking-wide text-muted-soft">
                         <tr className="border-b border-line">
                           <th className="py-2 pr-3">Name</th>
                           <th className="py-2 pr-3">Category</th>
@@ -430,7 +430,7 @@ export default function AdminDashboard() {
                           <tr key={p.id} className={cn("border-b border-line/60", !p.is_active && "opacity-55")}>
                             <td className="py-2.5 pr-3 font-medium text-heading">
                               {p.name}
-                              {!p.is_active && <span className="ml-2 text-xs text-primary">deleted</span>}
+                              {!p.is_active && <span className="ml-2 text-sm text-primary">deleted</span>}
                             </td>
                             <td className="py-2.5 pr-3 text-muted">
                               {AUDIENCES.find((a) => a.value === p.audience)?.label ?? p.audience}
@@ -439,16 +439,16 @@ export default function AdminDashboard() {
                             <td className="py-2.5 pr-3">{formatRupees(p.price)}</td>
                             <td className="py-2.5 pr-3">{p.stock_quantity}</td>
                             <td className="py-2.5 pr-3">
-                              <span className={cn("rounded-full px-2 py-0.5 text-xs font-semibold", STATUS_STYLE[p.status])}>
+                              <span className={cn("rounded-full px-2.5 py-0.5 text-sm font-semibold", STATUS_STYLE[p.status])}>
                                 {p.status}
                               </span>
                             </td>
                             <td className="py-2.5 pr-3 text-right">
-                              <button type="button" onClick={() => startEdit(p)} className="text-sm font-semibold text-primary hover:underline">
+                              <button type="button" onClick={() => startEdit(p)} className="text-base font-semibold text-primary hover:underline">
                                 Edit
                               </button>
                               {p.is_active && (
-                                <button type="button" onClick={() => onDelete(p)} className="ml-4 text-sm font-semibold text-muted hover:text-primary">
+                                <button type="button" onClick={() => onDelete(p)} className="ml-4 text-base font-semibold text-muted hover:text-primary">
                                   Delete
                                 </button>
                               )}
@@ -465,11 +465,11 @@ export default function AdminDashboard() {
 
           {view === "activity" && (
             <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
-              <h2 className="font-serif text-lg font-semibold text-heading">Recent changes</h2>
+              <h2 className="font-serif text-xl font-semibold text-heading">Recent changes</h2>
               {log.length === 0 ? (
-                <p className="mt-4 text-sm text-muted">No changes recorded yet.</p>
+                <p className="mt-4 text-base text-muted">No changes recorded yet.</p>
               ) : (
-                <ul className="mt-4 space-y-2 text-sm">
+                <ul className="mt-4 space-y-2 text-base">
                   {log.slice(0, 15).map((e) => (
                     <li key={e.id} className="flex flex-wrap items-baseline gap-x-2 border-b border-line/50 pb-2">
                       <span className="font-semibold text-heading">{e.action}</span>
@@ -479,7 +479,7 @@ export default function AdminDashboard() {
                           · {e.field_changed}: {e.old_value ?? "—"} → {e.new_value ?? "—"}
                         </span>
                       )}
-                      <span className="ml-auto text-xs text-muted-soft">
+                      <span className="ml-auto text-sm text-muted-soft">
                         {new Date(e.created_at).toLocaleString("en-IN")}
                       </span>
                     </li>

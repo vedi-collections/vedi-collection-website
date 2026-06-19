@@ -31,7 +31,7 @@ export function StoreHeader({ main, onMain, count, showCount, onOpenCart }: Stor
                 type="button"
                 onClick={() => onMain(tab)}
                 className={cn(
-                  "rounded-full px-3.5 py-2 text-sm font-bold transition",
+                  "rounded-full px-3.5 py-2 text-base font-bold transition",
                   main === tab ? "bg-primary text-primary-fg" : "text-muted hover:text-primary"
                 )}
               >
@@ -45,7 +45,7 @@ export function StoreHeader({ main, onMain, count, showCount, onOpenCart }: Stor
               href={waHelloLink()}
               target="_blank"
               rel="noreferrer"
-              className="hidden h-10 items-center gap-2 rounded-full bg-whatsapp px-4 text-sm font-bold text-whatsapp-fg min-[900px]:inline-flex"
+              className="hidden h-10 items-center gap-2 rounded-full bg-whatsapp px-4 text-base font-bold text-whatsapp-fg min-[900px]:inline-flex"
             >
               <WhatsAppIcon className="h-[18px] w-[18px]" /> Chat with us
             </a>
@@ -56,10 +56,10 @@ export function StoreHeader({ main, onMain, count, showCount, onOpenCart }: Stor
               aria-label={`Open bag${showCount ? ` with ${count} item${count > 1 ? "s" : ""}` : ""}`}
               className="relative inline-flex h-[42px] w-[42px] items-center justify-center rounded-full border border-line bg-surface text-primary min-[900px]:w-auto min-[900px]:gap-2 min-[900px]:px-4"
             >
-              <span className="hidden text-[13px] font-bold min-[900px]:inline">Bag</span>
+              <span className="hidden text-[15px] font-bold min-[900px]:inline">Bag</span>
               <BagIcon className="h-5 w-5" />
               {showCount && (
-                <span className="absolute -right-1 -top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-surface min-[900px]:static min-[900px]:h-5 min-[900px]:min-w-5">
+                <span className="absolute -right-1 -top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-accent px-1 text-xs font-bold text-surface min-[900px]:static min-[900px]:h-5 min-[900px]:min-w-5">
                   {count}
                 </span>
               )}

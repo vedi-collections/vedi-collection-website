@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Cormorant_Garamond, Karla } from "next/font/google";
+import { Karla, Lora } from "next/font/google";
 import Script from "next/script";
 
 import { CartProvider } from "@/components/cart/CartProvider";
@@ -10,11 +10,11 @@ import "./globals.css";
 
 // Fonts loaded via next/font (self-hosted, no render-blocking @import) and
 // exposed as CSS variables consumed by tailwind.config.ts fontFamily tokens.
-const cormorant = Cormorant_Garamond({
+const lora = Lora({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   style: ["normal", "italic"],
-  variable: "--font-cormorant",
+  variable: "--font-lora",
   display: "swap"
 });
 
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${karla.variable}`}>
+    <html lang="en" className={`${lora.variable} ${karla.variable}`}>
       <body>
         {/* Google tag (gtag.js) — Google Ads conversion tracking, sitewide.
             afterInteractive: loads once the page is interactive, on every route. */}

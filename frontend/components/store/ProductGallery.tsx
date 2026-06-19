@@ -29,7 +29,7 @@ export function ProductGallery({ product, className, motifClassName, children }:
   return (
     <div className={cn("flex bg-bg", className)}>
       {media.length > 1 && (
-        <div className="flex shrink-0 flex-col gap-2 overflow-y-auto border-r border-line bg-surface p-2 min-[900px]:p-2.5">
+        <div className="flex shrink-0 flex-col gap-2 overflow-y-auto bg-bg p-2 min-[900px]:p-2.5">
           {media.map((url, i) => {
             const isActive = i === active;
             return (
@@ -47,7 +47,7 @@ export function ProductGallery({ product, className, motifClassName, children }:
                 {isVideoUrl(url) ? (
                   <>
                     <video src={url} muted playsInline preload="metadata" className="h-full w-full object-cover" />
-                    <span className="absolute inset-0 grid place-items-center bg-primary-dark/30 text-xs text-white">
+                    <span className="absolute inset-0 grid place-items-center bg-primary-dark/30 text-sm text-white">
                       ▶
                     </span>
                   </>
@@ -61,7 +61,7 @@ export function ProductGallery({ product, className, motifClassName, children }:
         </div>
       )}
 
-      <div className="relative aspect-square min-w-0 flex-1 self-start bg-primary-dark">
+      <div className="relative aspect-square min-w-0 flex-1 self-start bg-bg">
         {current && isVideoUrl(current) ? (
           <video
             key={current}

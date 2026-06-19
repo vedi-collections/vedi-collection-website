@@ -22,9 +22,10 @@
   --color-primary-hover: 110 33 56; /* #6e2138 */
   --color-primary-dark: 62 15 30; /* #3e0f1e */
   --color-primary-fg: 250 241 220; /* #faf1dc */
+  --color-footer: 88 10 22; /* #580a16 rich reddish maroon footer */
 
-  --color-cta: 165 38 55; /* #a52637 deep red, maroon-tinted — "Add to bag" CTA */
-  --color-cta-hover: 138 30 47; /* #8a1e2f */
+  --color-cta: 185 0 0; /* #b90000 deep red - "Add to bag" CTA */
+  --color-cta-hover: 145 0 0; /* #910000 */
   --color-cta-fg: 255 255 255; /* #ffffff */
 
   --color-accent: 185 138 60; /* #b98a3c gold */
@@ -66,7 +67,7 @@
   h1,
   h2,
   h3 {
-    font-family: var(--font-cormorant), Georgia, serif;
+    font-family: var(--font-lora), Georgia, serif;
   }
   a {
     color: inherit;

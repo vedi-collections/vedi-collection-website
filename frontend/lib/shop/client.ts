@@ -7,6 +7,7 @@
 
 import { API_URL } from "@/lib/api";
 
+import { isVideoUrl } from "./media";
 import { COLLECTIONS, PRICE_BUCKETS } from "./mock-collections";
 import type { Collection, Product, ProductFilters, ProductSort } from "./types";
 
@@ -42,7 +43,11 @@ function slugify(value: string): string {
  *  fields the API doesn't carry yet (MRP/badges/attributes). */
 function mapApiProduct(p: ApiProduct): Product {
   const media = p.images ?? [];
-  const image = media[0] ?? null;
+  // The card thumbnail and OG/social preview need a still image. A product's
+  // cover (media[0]) can be a video — videos upload before images, so they land
+  // first — and an <img> can't render an .mp4. Use the first actual image; the
+  // detail gallery still receives the full `media` list (video included).
+  const image = media.find((url) => !isVideoUrl(url)) ?? null;
   const subcategory = p.subcategory?.trim() || null;
   return {
     id: p.id,

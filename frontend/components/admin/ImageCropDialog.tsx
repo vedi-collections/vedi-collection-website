@@ -101,11 +101,11 @@ export function ImageCropDialog({ file, remaining, onDone, onSkip }: ImageCropDi
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 grid place-items-center bg-primary-dark/60 p-4">
       <div className="w-full max-w-md rounded-2xl border border-line bg-surface p-5 shadow-xl">
-        <h3 className="font-serif text-lg font-semibold text-heading">
+        <h3 className="font-serif text-xl font-semibold text-heading">
           Crop image{remaining > 1 ? ` (${remaining} left)` : ""}
         </h3>
-        <p className="mt-1 text-xs text-muted">
-          Drag and zoom to crop to a square — or just add it as-is to keep the whole image with black bars.
+        <p className="mt-1 text-sm text-muted">
+          Drag and zoom to crop to a square — or just add it as-is to keep the whole image with padded bars.
         </p>
 
         <div className="mt-3 grid place-items-center">
@@ -117,11 +117,11 @@ export function ImageCropDialog({ file, remaining, onDone, onSkip }: ImageCropDi
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
             onPointerLeave={endDrag}
-            className="aspect-square w-full max-w-[360px] cursor-grab touch-none rounded-lg border border-line bg-black active:cursor-grabbing"
+            className="aspect-square w-full max-w-[360px] cursor-grab touch-none rounded-lg border border-line bg-bg active:cursor-grabbing"
           />
         </div>
 
-        <label className="mt-3 flex items-center gap-3 text-xs font-medium text-muted">
+        <label className="mt-3 flex items-center gap-3 text-sm font-medium text-muted">
           Zoom
           <input
             type="range"
@@ -136,10 +136,10 @@ export function ImageCropDialog({ file, remaining, onDone, onSkip }: ImageCropDi
         </label>
 
         <div className="mt-4 flex justify-end gap-3">
-          <button type="button" onClick={onSkip} disabled={busy} className={buttonClasses("ghost", "sm")}>
+          <button type="button" onClick={onSkip} disabled={busy} className={buttonClasses("ghost", "sm", "!text-sm")}>
             Skip this file
           </button>
-          <button type="button" onClick={apply} disabled={!ready || busy} className={buttonClasses("primary", "sm")}>
+          <button type="button" onClick={apply} disabled={!ready || busy} className={buttonClasses("primary", "sm", "!text-sm")}>
             {busy ? "Adding…" : "Add image"}
           </button>
         </div>

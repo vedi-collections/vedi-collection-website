@@ -14,16 +14,28 @@ export type CropTransform = {
 
 export const OUTPUT_SIZE = 1080; // exported square side, in px
 
-/** Draw the image into a square canvas: black background + the image scaled by
- *  `zoom` (relative to a contain-fit) and panned by the offsets. Same math for
- *  the live preview and the final export, so what you see is what you get. */
+/** Letterbox padding for uncropped images. Resolved from the site background
+ *  token (`--color-bg`) so the bars blend into the page instead of showing as
+ *  black; falls back to the cream default when no DOM/theme is available. */
+function padColor(): string {
+  if (typeof document !== "undefined") {
+    const v = getComputedStyle(document.documentElement).getPropertyValue("--color-bg").trim();
+    if (v) return `rgb(${v})`;
+  }
+  return "#faf5ec"; // matches --color-bg default (cream)
+}
+
+/** Draw the image into a square canvas: site-background padding + the image
+ *  scaled by `zoom` (relative to a contain-fit) and panned by the offsets. Same
+ *  math for the live preview and the final export, so what you see is what you
+ *  get. */
 export function drawSquare(
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement,
   t: CropTransform,
   size: number,
 ): void {
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = padColor();
   ctx.fillRect(0, 0, size, size);
 
   const fit = Math.min(size / img.naturalWidth, size / img.naturalHeight);

@@ -69,7 +69,7 @@ export function CartDrawer() {
         className="flex max-h-[84vh] w-full animate-up flex-col overflow-hidden rounded-t-[20px] bg-bg min-[900px]:h-screen min-[900px]:max-h-none min-[900px]:w-[min(440px,100vw)] min-[900px]:animate-slide-in-right min-[900px]:rounded-none"
       >
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
-          <h2 id="cart-title" className="font-serif text-[23px] font-semibold text-heading">
+          <h2 id="cart-title" className="font-serif text-[26px] font-semibold text-heading">
             Your bag ({count})
           </h2>
           <button
@@ -84,8 +84,8 @@ export function CartDrawer() {
 
         {lines.length === 0 ? (
           <div className="px-6 py-14 text-center">
-            <h3 className="font-serif text-2xl font-semibold italic text-heading">Your bag is empty</h3>
-            <p className="mx-auto mt-3 max-w-[30ch] text-sm leading-relaxed text-muted">
+            <h3 className="font-serif text-[28px] font-semibold italic text-heading">Your bag is empty</h3>
+            <p className="mx-auto mt-3 max-w-[30ch] text-base leading-relaxed text-muted">
               Browse the edit and add the fabrics you would like us to confirm on WhatsApp.
             </p>
             <button type="button" onClick={closeCart} className={buttonClasses("primary", "md", "mt-5")}>
@@ -107,8 +107,8 @@ export function CartDrawer() {
                       motifClassName="text-lg"
                     />
                     <div className="min-w-0">
-                      <h3 className="truncate text-[13px] font-bold text-heading">{line.product.name}</h3>
-                      <p className="mb-2 mt-1 text-xs text-muted-soft">
+                      <h3 className="truncate text-base font-bold text-heading">{line.product.name}</h3>
+                      <p className="mb-2 mt-1 text-sm text-muted-soft">
                         {line.product.shade}
                         {line.size ? ` · ${line.size}` : ""} · {line.product.unit}
                       </p>
@@ -123,19 +123,19 @@ export function CartDrawer() {
                           type="button"
                           onClick={() => remove(key)}
                           aria-label={`Remove ${line.product.name} from bag`}
-                          className="inline-flex items-center gap-1 text-xs font-medium text-muted-soft transition-colors hover:text-primary"
+                          className="inline-flex items-center gap-1 text-sm font-medium text-muted-soft transition-colors hover:text-primary"
                         >
                           <TrashIcon className="h-3.5 w-3.5" />
                           Remove
                         </button>
                       </div>
                       {line.qty >= line.product.stock && (
-                        <p className="mt-1.5 text-[11px] font-medium text-accent">
+                        <p className="mt-1.5 text-[13px] font-medium text-accent">
                           Only {line.product.stock} in stock
                         </p>
                       )}
                     </div>
-                    <strong className="self-start text-[13px] text-heading">
+                    <strong className="self-start text-[15px] text-heading">
                       {formatINR(line.product.priceMinor * line.qty)}
                     </strong>
                   </div>
@@ -144,13 +144,13 @@ export function CartDrawer() {
             </div>
 
             <div className="border-t border-line bg-surface/95 px-5 pb-[calc(16px+env(safe-area-inset-bottom))] pt-3.5">
-              <p className="text-xs text-muted-soft">{shipMsg}</p>
+              <p className="text-sm text-muted-soft">{shipMsg}</p>
               <div className="mt-2 h-[5px] overflow-hidden rounded-full bg-line">
                 <span className="block h-full rounded-full bg-accent" style={{ width: `${pct}%` }} />
               </div>
               <div className="mt-3.5 flex items-center justify-between text-heading">
                 <span className="font-bold">Subtotal</span>
-                <strong className="text-[19px]">{formatINR(subtotalMinor)}</strong>
+                <strong className="text-xl">{formatINR(subtotalMinor)}</strong>
               </div>
               <a
                 href={waCartLink(lines, subtotalMinor)}
@@ -161,7 +161,7 @@ export function CartDrawer() {
               >
                 <WhatsAppIcon className="h-5 w-5" /> Checkout on WhatsApp
               </a>
-              <p className="mt-2.5 text-center text-xs text-muted-soft">
+              <p className="mt-2.5 text-center text-sm text-muted-soft">
                 Pay via UPI or Cash on Delivery after confirmation.
               </p>
             </div>
