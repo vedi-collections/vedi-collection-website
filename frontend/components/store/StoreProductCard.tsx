@@ -43,8 +43,7 @@ export function StoreProductCard({ product, onAdd }: StoreProductCardProps) {
       </ProductImage>
 
       <div className="pt-2.5">
-        <h3 className="text-sm font-semibold leading-tight text-heading min-[900px]:text-[15px]">{product.name}</h3>
-        <p className="mt-1 text-xs text-muted-soft min-[900px]:text-[13px]">{product.shade}</p>
+        <h3 className="text-lg font-semibold leading-tight text-heading min-[900px]:text-lg">{product.name}</h3>
         <PriceTag priceMinor={product.priceMinor} mrpMinor={product.mrpMinor} className="mt-1.5" />
       </div>
 

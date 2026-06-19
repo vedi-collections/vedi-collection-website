@@ -96,15 +96,15 @@ export function MediaUploader({ value, onChange, disabled }: MediaUploaderProps)
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={disabled || busy}
-          className={buttonClasses("outline", "sm")}
+          className={buttonClasses("outline", "sm", "!text-sm")}
         >
           {busy ? "Uploading…" : value.length > 0 ? "Add more" : "Upload images / videos"}
         </button>
-        <span className="text-xs text-muted-soft">Images are squared (1:1); videos up to 25 MB.</span>
+        <span className="text-sm text-muted-soft">Images are squared (1:1); videos up to 25 MB.</span>
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-primary">
+        <p role="alert" className="text-base text-primary">
           {error}
         </p>
       )}
@@ -124,14 +124,14 @@ export function MediaUploader({ value, onChange, disabled }: MediaUploaderProps)
               )}
 
               {i === 0 ? (
-                <span className="absolute left-1 top-1 rounded bg-primary/85 px-1.5 py-0.5 text-[10px] font-semibold text-primary-fg">
+                <span className="absolute left-1 top-1 rounded bg-primary/85 px-1.5 py-0.5 text-xs font-semibold text-primary-fg">
                   Cover
                 </span>
               ) : (
                 <button
                   type="button"
                   onClick={() => makeCover(i)}
-                  className="absolute left-1 top-1 rounded bg-surface/90 px-1.5 py-0.5 text-[10px] font-semibold text-primary hover:bg-surface"
+                  className="absolute left-1 top-1 rounded bg-surface/90 px-1.5 py-0.5 text-xs font-semibold text-primary hover:bg-surface"
                 >
                   Make cover
                 </button>

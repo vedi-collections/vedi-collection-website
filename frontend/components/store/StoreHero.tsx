@@ -78,16 +78,16 @@ export function StoreHero({ main, products, onShop, onSelectAudience }: StoreHer
         style={{ background: HERO_BG }}
       >
         <div className="self-end p-6 pb-9 min-[900px]:self-center min-[900px]:px-16 min-[900px]:py-14">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-accent-light">
+          <p className="text-[13px] font-bold uppercase tracking-[0.22em] text-accent-light">
             The Festive Edit &apos;26 · {isLadies ? "Ladies" : "Gents"}
           </p>
           <h1
             id="hero-title"
-            className="mt-2.5 max-w-[8.5em] font-serif text-[34px] font-semibold leading-[1.12] text-primary-fg min-[900px]:max-w-[10.5em] min-[900px]:text-[52px]"
+            className="mt-2.5 max-w-[8.5em] font-serif text-[38px] font-semibold leading-[1.12] text-primary-fg min-[900px]:max-w-[10.5em] min-[900px]:text-[56px]"
           >
             {copy.title}
           </h1>
-          <p className="mt-3.5 max-w-[30ch] text-sm leading-relaxed text-primary-fg/[0.78] min-[900px]:text-base">
+          <p className="mt-3.5 max-w-[30ch] text-base leading-relaxed text-primary-fg/[0.78] min-[900px]:text-lg">
             {copy.body}
           </p>
           <button
@@ -145,8 +145,8 @@ function AudienceSide({
       )}
     >
       <span className="pointer-events-none absolute inset-0 bg-primary-fg/0 transition-colors duration-200 group-hover:bg-primary-fg/[0.06]" />
-      <span className="relative text-[11px] font-bold uppercase tracking-[0.22em] text-accent-light">{eyebrow}</span>
-      <span className="relative mt-2 font-serif text-[22px] font-semibold leading-[1.15] text-primary-fg min-[900px]:text-[32px]">
+      <span className="relative text-[13px] font-bold uppercase tracking-[0.22em] text-accent-light">{eyebrow}</span>
+      <span className="relative mt-2 font-serif text-[26px] font-semibold leading-[1.15] text-primary-fg min-[900px]:text-[36px]">
         {title}
       </span>
       <span className={buttonClasses("primary", "sm", "relative mt-3 bg-accent-light text-primary-dark group-hover:bg-accent")}>
@@ -175,7 +175,7 @@ function FeaturedCard({
       }
     >
       <ProductImage seed={seed} imageUrl={imageUrl} alt={title} className="aspect-[3/4] w-full" motifClassName="text-[44px]">
-        <p className="absolute inset-x-4 bottom-4 z-[1] text-[13px] font-bold text-primary-fg">{title}</p>
+        <p className="absolute inset-x-4 bottom-4 z-[1] text-[15px] font-bold text-primary-fg">{title}</p>
       </ProductImage>
     </div>
   );

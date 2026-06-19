@@ -29,7 +29,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {message && (
         <div
           role="status"
-          className="fixed bottom-[86px] left-1/2 z-[60] w-[min(calc(100%-36px),350px)] -translate-x-1/2 animate-up rounded-full bg-primary-dark px-4 py-3 text-center text-sm font-bold text-primary-fg shadow-xl"
+          className="fixed bottom-[86px] left-1/2 z-[60] w-[min(calc(100%-36px),350px)] -translate-x-1/2 animate-up rounded-full bg-primary-dark px-4 py-3 text-center text-base font-bold text-primary-fg shadow-xl"
         >
           {message}
         </div>

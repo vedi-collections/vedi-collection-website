@@ -74,12 +74,12 @@ export function Storefront({ products }: { products: Product[] }) {
             <Container className="py-3.5 min-[900px]:py-10">
               <div className="mb-3.5 flex items-end justify-between gap-4">
                 <div>
-                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-accent">Curated fabrics</p>
-                  <h2 className="font-serif text-[22px] font-semibold leading-none text-heading min-[900px]:text-[32px]">
+                  <p className="mb-1 text-[13px] font-bold uppercase tracking-[0.18em] text-accent">Curated fabrics</p>
+                  <h2 className="font-serif text-[26px] font-semibold leading-none text-heading min-[900px]:text-[34px]">
                     {sectionTitle(main, sectionSubLabel)}
                   </h2>
                 </div>
-                <span className="shrink-0 text-xs text-muted-soft">{filtered.length} items</span>
+                <span className="shrink-0 text-sm text-muted-soft">{filtered.length} items</span>
               </div>
 
               {subDefs.length > 0 && (

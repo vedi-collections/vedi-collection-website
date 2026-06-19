@@ -37,7 +37,7 @@ export function QtyStepper({
       >
         −
       </button>
-      <span className="min-w-6 text-center text-sm font-bold text-heading">{value}</span>
+      <span className="min-w-6 text-center text-base font-bold text-heading">{value}</span>
       <button
         type="button"
         aria-label={`Increase ${label}`}

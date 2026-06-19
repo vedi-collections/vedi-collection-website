@@ -17,7 +17,7 @@ export function Brand({ tone = "default", align = "start", href = "/", className
       <span className={cn("font-serif text-2xl font-bold", tone === "light" ? "text-primary-fg" : "text-primary")}>
         Vedi
       </span>
-      <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.34em] text-accent">Collections</span>
+      <span className="mt-0.5 text-xs font-bold uppercase tracking-[0.34em] text-accent">Collections</span>
     </span>
   );
 

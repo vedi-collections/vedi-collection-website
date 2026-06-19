@@ -76,7 +76,7 @@ export function ProductView({ product, related }: { product: Product; related: P
             <button
               type="button"
               onClick={goBack}
-              className="hidden items-center gap-2 py-5 text-sm font-bold text-muted hover:text-primary min-[900px]:inline-flex"
+              className="hidden items-center gap-2 py-5 text-base font-bold text-muted hover:text-primary min-[900px]:inline-flex"
             >
               <ArrowLeftIcon className="h-4 w-4" /> Back
             </button>
@@ -84,7 +84,7 @@ export function ProductView({ product, related }: { product: Product; related: P
             <article className="min-[900px]:grid min-[900px]:grid-cols-[1fr_1.05fr] min-[900px]:items-start min-[900px]:gap-9">
               <ProductGallery
                 product={product}
-                className="w-full shrink-0 min-[900px]:sticky min-[900px]:top-24 min-[900px]:self-start min-[900px]:overflow-hidden min-[900px]:rounded-2xl min-[900px]:border min-[900px]:border-line"
+                className="w-full shrink-0 min-[900px]:sticky min-[900px]:top-24 min-[900px]:self-start min-[900px]:overflow-hidden min-[900px]:rounded-2xl"
                 motifClassName="text-[54px]"
               >
                 <button
@@ -99,13 +99,13 @@ export function ProductView({ product, related }: { product: Product; related: P
 
               <div className="p-5 min-[900px]:p-0">
                 {categoryLabel && (
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-accent">
+                  <p className="text-[13px] font-bold uppercase tracking-[0.18em] text-accent">
                     {categoryLabel}
                   </p>
                 )}
                 <h1
                   className={cn(
-                    "font-serif text-[27px] font-semibold leading-tight text-heading min-[900px]:text-[34px]",
+                    "font-serif text-[30px] font-semibold leading-tight text-heading min-[900px]:text-[38px]",
                     categoryLabel && "mt-1.5",
                   )}
                 >
@@ -114,21 +114,21 @@ export function ProductView({ product, related }: { product: Product; related: P
 
                 <div className="mt-3.5 flex flex-wrap items-baseline gap-2.5">
                   <PriceTag priceMinor={product.priceMinor} mrpMinor={product.mrpMinor} size="lg" />
-                  {saving > 0 && <span className="text-xs font-bold text-whatsapp">Save {formatINR(saving)}</span>}
+                  {saving > 0 && <span className="text-sm font-bold text-whatsapp">Save {formatINR(saving)}</span>}
                 </div>
 
                 {product.shade && (
-                  <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted">{product.shade}</p>
+                  <p className="mt-4 whitespace-pre-line text-base leading-relaxed text-muted">{product.shade}</p>
                 )}
 
                 <div className="mt-5 space-y-3.5">
                   {outOfStock ? (
-                    <p className="text-[13px] font-bold text-accent">Out of stock</p>
+                    <p className="text-[15px] font-bold text-accent">Out of stock</p>
                   ) : lowStock ? (
-                    <p className="text-[13px] font-bold text-accent">Only {product.stock} left in stock</p>
+                    <p className="text-[15px] font-bold text-accent">Only {product.stock} left in stock</p>
                   ) : null}
 
-                  <div className="rounded-xl bg-info p-3.5 text-[13px] leading-relaxed text-muted">
+                  <div className="rounded-xl bg-info p-3.5 text-[15px] leading-relaxed text-muted">
                     Order is confirmed on WhatsApp after stock check.{" "}
                     <a href={waHref} target="_blank" rel="noreferrer" className="font-bold text-whatsapp-dark">
                       Ask availability now
@@ -143,7 +143,7 @@ export function ProductView({ product, related }: { product: Product; related: P
 
             {related.length > 0 && (
               <section className="mt-12 px-5 pb-10 min-[900px]:mt-16 min-[900px]:px-0">
-                <h2 className="font-serif text-[22px] font-semibold leading-none text-heading min-[900px]:text-[28px]">
+                <h2 className="font-serif text-[26px] font-semibold leading-none text-heading min-[900px]:text-[32px]">
                   You may also like
                 </h2>
                 <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-4 min-[900px]:mt-6 min-[900px]:grid-cols-4 min-[900px]:gap-x-5 min-[900px]:gap-y-7">

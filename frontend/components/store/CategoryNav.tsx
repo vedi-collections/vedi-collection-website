@@ -19,7 +19,7 @@ export function SubChips({
           type="button"
           onClick={() => onSelect(sub.label)}
           className={cn(
-            "shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-bold transition",
+            "shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm font-bold transition",
             active === sub.label
               ? "border-accent bg-accent text-surface"
               : "border-line bg-surface text-muted"
@@ -27,7 +27,7 @@ export function SubChips({
         >
           {sub.label}
           {sub.soon && (
-            <span className={cn("ml-1.5 text-[11px] font-semibold", active === sub.label ? "text-surface/80" : "text-muted-strike")}>
+            <span className={cn("ml-1.5 text-[13px] font-semibold", active === sub.label ? "text-surface/80" : "text-muted-strike")}>
               soon
             </span>
           )}
@@ -56,7 +56,7 @@ export function CategoryNav({ main, onMain, subs, activeSub, onSub }: CategoryNa
             type="button"
             onClick={() => onMain(tab)}
             className={cn(
-              "flex-1 rounded-full border px-3 py-2.5 text-[13px] font-bold transition",
+              "flex-1 rounded-full border px-3 py-2.5 text-[15px] font-bold transition",
               main === tab ? "border-primary bg-primary text-primary-fg" : "border-line bg-surface text-muted"
             )}
           >

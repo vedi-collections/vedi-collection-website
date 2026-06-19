@@ -17,9 +17,9 @@ const variants: Record<ButtonVariant, string> = {
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "min-h-9 px-4 text-xs",
-  md: "min-h-11 px-5 text-sm",
-  lg: "min-h-[52px] px-6 text-sm"
+  sm: "min-h-9 px-4 text-sm",
+  md: "min-h-11 px-5 text-base",
+  lg: "min-h-[52px] px-6 text-base"
 };
 
 /** Class string for a button-styled element. Reuse on <Link>/<a> too. */
