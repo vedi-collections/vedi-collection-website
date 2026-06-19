@@ -2,12 +2,15 @@
 // The base tag is loaded sitewide from app/layout.tsx; the purchase conversion
 // is fired from the cart when a customer starts checkout on WhatsApp.
 //
-// ─── SWAP THESE TWO VALUES FOR YOUR REAL GOOGLE ADS IDENTIFIERS ────────────
-//   GOOGLE_ADS_ID              your Conversion ID            → "AW-XXXXXXXXX"
-//   PURCHASE_CONVERSION_LABEL  your purchase Conversion Label → "AW-XXXXXXXXX/YYYYYYYYY"
+// ─── GOOGLE ADS IDENTIFIERS ────────────────────────────────────────────────
+//   GOOGLE_ADS_ID              Conversion ID            → set (AW-18016707416)
+//   PURCHASE_CONVERSION_LABEL  purchase Conversion Label → ⚠️ STILL A PLACEHOLDER
+//     Replace REPLACE_WITH_LABEL with the label from Google Ads →
+//     Goals → Conversions → your "Purchase" action → Tag setup (use Google tag).
+//     It looks like "AW-18016707416/AbCdEf123_gQ".
 // ──────────────────────────────────────────────────────────────────────────
-export const GOOGLE_ADS_ID = "AW-XXXXXXXXX";
-export const PURCHASE_CONVERSION_LABEL = "AW-XXXXXXXXX/YYYYYYYYY";
+export const GOOGLE_ADS_ID = "AW-18016707416";
+export const PURCHASE_CONVERSION_LABEL = "AW-18016707416/REPLACE_WITH_LABEL";
 
 // gtag.js attaches these to window. Typed here so callers stay strict-mode clean.
 declare global {
