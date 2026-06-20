@@ -22,7 +22,12 @@ class Product(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Whole rupees (INR). Integer per the project money rule; the UI formats
     # with Indian-style commas (e.g. 1850 -> "1,850"). No paise.
+    # Selling price the customer pays, in whole rupees (INR). No paise.
     price: Mapped[int] = mapped_column(Integer, nullable=False)
+    # Original price (MRP) before discount, whole rupees. NULL when the product
+    # isn't discounted. The discount % is always derived from mrp vs price, never
+    # stored — so the two stay consistent. Storefront strikes mrp out when set.
+    mrp: Mapped[int | None] = mapped_column(Integer, nullable=True)
     stock_quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     # List of image URLs (admin-supplied). JSONB on Postgres, JSON on SQLite.
     images: Mapped[list[str]] = mapped_column(JSONBType, nullable=False, default=list)

@@ -53,7 +53,14 @@ const labelClass = "block text-base font-medium text-heading";
 
 type FormState = {
   name: string;
+  /** Sale price the customer pays (whole rupees). */
   price: string;
+  /** Original price / MRP (whole rupees); blank = no discount. */
+  mrp: string;
+  /** Discount percent — only used to compute `price` in "discount" mode. */
+  discount: string;
+  /** How the staff enters the price: type both prices, or MRP + a discount %. */
+  priceMode: "both" | "discount";
   stock: string;
   status: ProductStatus;
   audience: ProductAudience;
@@ -66,6 +73,9 @@ type FormState = {
 const EMPTY: FormState = {
   name: "",
   price: "",
+  mrp: "",
+  discount: "",
+  priceMode: "both",
   stock: "0",
   status: "draft",
   audience: "women",
@@ -138,6 +148,14 @@ export default function AdminDashboard() {
     setForm({
       name: p.name,
       price: String(p.price),
+      mrp: p.mrp != null ? String(p.mrp) : "",
+      // Pre-fill the % too, so switching to "Set a discount %" on an existing
+      // product starts from its current discount instead of blank.
+      discount:
+        p.mrp != null && p.mrp > p.price
+          ? String(Math.round(((p.mrp - p.price) / p.mrp) * 100))
+          : "",
+      priceMode: "both",
       stock: String(p.stock_quantity),
       status: p.status,
       audience: p.audience,
@@ -161,11 +179,38 @@ export default function AdminDashboard() {
     setError(null);
     setNotice(null);
 
-    const price = Number(form.price);
     const stock = Number(form.stock);
     if (!form.name.trim()) return setError("Name is required.");
-    if (!Number.isInteger(price) || price < 0)
-      return setError("Price must be a whole number of rupees.");
+
+    // Resolve the sale price + original price (MRP) from the chosen entry mode:
+    //  - "both":     staff types MRP + sale price; the discount % is derived.
+    //  - "discount": staff types MRP + discount %; the sale price is computed.
+    // Either way we only ever store `price` (sale) and `mrp` (original).
+    let price: number;
+    let mrp: number | null = null;
+    if (form.priceMode === "discount") {
+      const original = Number(form.mrp);
+      const pct = Number(form.discount);
+      if (!form.mrp.trim() || !Number.isInteger(original) || original <= 0)
+        return setError("Enter the original price (a whole number of rupees).");
+      if (!form.discount.trim() || !Number.isInteger(pct) || pct < 0 || pct > 100)
+        return setError("Discount must be a whole number between 0 and 100.");
+      mrp = original;
+      price = Math.round(original * (1 - pct / 100));
+    } else {
+      price = Number(form.price);
+      if (!form.price.trim() || !Number.isInteger(price) || price < 0)
+        return setError("Sale price must be a whole number of rupees.");
+      if (form.mrp.trim()) {
+        const original = Number(form.mrp);
+        if (!Number.isInteger(original) || original < 0)
+          return setError("Original price must be a whole number of rupees.");
+        if (original < price)
+          return setError("Original price should be higher than the sale price.");
+        mrp = original > price ? original : null; // equal prices = no real discount
+      }
+    }
+
     if (!Number.isInteger(stock) || stock < 0) return setError("Stock must be a whole number.");
     if (form.status === "scheduled" && !form.goLiveAt)
       return setError("Pick a go-live date & time for a scheduled product.");
@@ -174,6 +219,7 @@ export default function AdminDashboard() {
       name: form.name.trim(),
       description: form.description.trim() || null,
       price,
+      mrp,
       stock_quantity: stock,
       images: form.images,
       audience: form.audience,
@@ -233,6 +279,21 @@ export default function AdminDashboard() {
     activity: log.length,
   };
   const activeLabel = NAV.find((n) => n.id === view)?.label ?? "";
+
+  // Live pricing preview for the product form's two entry modes.
+  const mrpNum = Number(form.mrp);
+  const saleNum = Number(form.price);
+  const discNum = Number(form.discount);
+  const hasMrp = form.mrp.trim() !== "" && Number.isFinite(mrpNum) && mrpNum > 0;
+  // "both" mode: derive the discount % from MRP vs the typed sale price.
+  const bothPct =
+    hasMrp && Number.isFinite(saleNum) && mrpNum > saleNum && saleNum >= 0
+      ? Math.round(((mrpNum - saleNum) / mrpNum) * 100)
+      : null;
+  // "discount" mode: derive the sale price from MRP and the typed discount %.
+  const computedSale = hasMrp
+    ? Math.max(0, Math.round(mrpNum * (1 - (Number.isFinite(discNum) ? discNum : 0) / 100)))
+    : null;
 
   return (
     <div className="min-h-screen bg-bg text-text">
@@ -307,10 +368,81 @@ export default function AdminDashboard() {
                     <input className={cn(inputClass, "mt-1")} value={form.name} onChange={(e) => set("name", e.target.value)} />
                   </label>
 
-                  <label className={labelClass}>
-                    Price (₹, whole rupees)
-                    <input className={cn(inputClass, "mt-1")} inputMode="numeric" value={form.price} onChange={(e) => set("price", e.target.value)} placeholder="1850" />
-                  </label>
+                  <div className={cn(labelClass, "sm:col-span-2")}>
+                    Pricing
+                    {/* Two ways to set the price — both store an original (MRP) + a sale price. */}
+                    <div className="mt-1.5 inline-flex rounded-lg border border-line bg-surface-alt p-1 text-sm font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => set("priceMode", "both")}
+                        className={cn(
+                          "rounded-md px-3.5 py-1.5 transition",
+                          form.priceMode === "both" ? "bg-primary text-primary-fg" : "text-muted",
+                        )}
+                      >
+                        Enter both prices
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => set("priceMode", "discount")}
+                        className={cn(
+                          "rounded-md px-3.5 py-1.5 transition",
+                          form.priceMode === "discount" ? "bg-primary text-primary-fg" : "text-muted",
+                        )}
+                      >
+                        Set a discount %
+                      </button>
+                    </div>
+
+                    <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                      <label className={labelClass}>
+                        Original price (₹, MRP)
+                        <input
+                          className={cn(inputClass, "mt-1")}
+                          inputMode="numeric"
+                          value={form.mrp}
+                          onChange={(e) => set("mrp", e.target.value)}
+                          placeholder="2000"
+                        />
+                      </label>
+
+                      {form.priceMode === "discount" ? (
+                        <label className={labelClass}>
+                          Discount (%)
+                          <input
+                            className={cn(inputClass, "mt-1")}
+                            inputMode="numeric"
+                            value={form.discount}
+                            onChange={(e) => set("discount", e.target.value)}
+                            placeholder="25"
+                          />
+                        </label>
+                      ) : (
+                        <label className={labelClass}>
+                          Sale price{" "}
+                          <span className="font-normal text-muted-soft">(what they pay)</span>
+                          <input
+                            className={cn(inputClass, "mt-1")}
+                            inputMode="numeric"
+                            value={form.price}
+                            onChange={(e) => set("price", e.target.value)}
+                            placeholder="1500"
+                          />
+                        </label>
+                      )}
+                    </div>
+
+                    {/* Plain-words preview of the value we calculate for them. */}
+                    <p className="mt-2 text-sm font-normal text-muted">
+                      {form.priceMode === "discount"
+                        ? computedSale != null
+                          ? `Sale price: ${formatRupees(computedSale)} — after ${form.discount || 0}% off`
+                          : "Enter the original price and a discount to see the sale price."
+                        : bothPct != null
+                          ? `Discount: ${bothPct}% off · They save ${formatRupees(mrpNum - saleNum)}`
+                          : "Tip: add an original price higher than the sale price to show a discount."}
+                    </p>
+                  </div>
 
                   <label className={labelClass}>
                     Stock quantity
@@ -328,7 +460,14 @@ export default function AdminDashboard() {
                     </select>
                   </label>
 
-                  <label className={labelClass}>
+                  {form.status === "scheduled" && (
+                    <label className={labelClass}>
+                      Go live at
+                      <input type="datetime-local" className={cn(inputClass, "mt-1")} value={form.goLiveAt} onChange={(e) => set("goLiveAt", e.target.value)} />
+                    </label>
+                  )}
+
+                  <label className={cn(labelClass, "sm:col-start-1")}>
                     Category
                     <select
                       className={cn(inputClass, "mt-1")}
@@ -360,13 +499,6 @@ export default function AdminDashboard() {
                     </datalist>
                   </label>
 
-                  {form.status === "scheduled" && (
-                    <label className={labelClass}>
-                      Go live at
-                      <input type="datetime-local" className={cn(inputClass, "mt-1")} value={form.goLiveAt} onChange={(e) => set("goLiveAt", e.target.value)} />
-                    </label>
-                  )}
-
                   <label className={cn(labelClass, "sm:col-span-2")}>
                     Description
                     <textarea className={cn(inputClass, "mt-1 min-h-[72px]")} value={form.description} onChange={(e) => set("description", e.target.value)} />
@@ -392,7 +524,7 @@ export default function AdminDashboard() {
                   )}
 
                   <div className="flex gap-3 sm:col-span-2">
-                    <button type="submit" disabled={saving} className={buttonClasses("primary", "md", "!text-base")}>
+                    <button type="submit" disabled={saving} className={buttonClasses("primary", "md", "!font-bold !text-base")}>
                       {saving ? "Saving…" : editingId ? "Save changes" : "Create product"}
                     </button>
                     {editingId && (
@@ -436,7 +568,14 @@ export default function AdminDashboard() {
                               {AUDIENCES.find((a) => a.value === p.audience)?.label ?? p.audience}
                               {p.subcategory ? ` · ${p.subcategory}` : ""}
                             </td>
-                            <td className="py-2.5 pr-3">{formatRupees(p.price)}</td>
+                            <td className="py-2.5 pr-3">
+                              <span className="font-medium text-heading">{formatRupees(p.price)}</span>
+                              {p.mrp != null && p.mrp > p.price && (
+                                <span className="ml-2 text-sm text-muted-soft line-through">
+                                  {formatRupees(p.mrp)}
+                                </span>
+                              )}
+                            </td>
                             <td className="py-2.5 pr-3">{p.stock_quantity}</td>
                             <td className="py-2.5 pr-3">
                               <span className={cn("rounded-full px-2.5 py-0.5 text-sm font-semibold", STATUS_STYLE[p.status])}>

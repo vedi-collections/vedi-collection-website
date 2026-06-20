@@ -96,7 +96,7 @@ export function MediaUploader({ value, onChange, disabled }: MediaUploaderProps)
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={disabled || busy}
-          className={buttonClasses("outline", "sm", "!text-sm")}
+          className={buttonClasses("primary", "md", "!font-bold !text-base")}
         >
           {busy ? "Uploading…" : value.length > 0 ? "Add more" : "Upload images / videos"}
         </button>
