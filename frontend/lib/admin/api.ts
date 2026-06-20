@@ -15,6 +15,8 @@ export type AdminProduct = {
   name: string;
   description: string | null;
   price: number;
+  /** Original price (MRP) in whole rupees; null when not discounted. */
+  mrp: number | null;
   stock_quantity: number;
   images: string[];
   audience: ProductAudience;
@@ -30,6 +32,8 @@ export type ProductInput = {
   name: string;
   description?: string | null;
   price: number;
+  /** Original price (MRP), whole rupees; null/omitted = no discount. */
+  mrp?: number | null;
   stock_quantity: number;
   images: string[];
   audience: ProductAudience;

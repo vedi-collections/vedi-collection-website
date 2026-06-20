@@ -51,7 +51,7 @@ def test_public_list_shows_only_live_and_active(client: TestClient, db_session: 
     assert names == ["Live"]
     # Public shape must not leak lifecycle/soft-delete fields.
     assert set(resp.json()["products"][0]) == {
-        "id", "name", "description", "price", "stock_quantity", "images",
+        "id", "name", "description", "price", "mrp", "stock_quantity", "images",
         "audience", "subcategory",
     }
     assert str(live.id) == resp.json()["products"][0]["id"]
@@ -111,6 +111,43 @@ def test_admin_create_with_category(client: TestClient, db_session: Session) -> 
     assert plain.status_code == 201, plain.text
     assert plain.json()["audience"] == "women"
     assert plain.json()["subcategory"] is None
+
+
+def test_admin_create_with_mrp(client: TestClient, db_session: Session) -> None:
+    """Original price (MRP) is stored alongside the sale price; the discount %
+    is derived on the frontend, never stored."""
+    headers = _admin_headers(db_session)
+    resp = client.post(
+        "/admin/products",
+        headers=headers,
+        json={"name": "On Sale", "price": 1500, "mrp": 2000, "status": "live"},
+    )
+    assert resp.status_code == 201, resp.text
+    assert resp.json()["price"] == 1500
+    assert resp.json()["mrp"] == 2000
+
+    # Public read carries the MRP too, so the storefront can strike it through.
+    public = client.get("/products").json()["products"][0]
+    assert public["price"] == 1500 and public["mrp"] == 2000
+
+
+def test_mrp_below_price_is_rejected(client: TestClient, db_session: Session) -> None:
+    resp = client.post(
+        "/admin/products",
+        headers=_admin_headers(db_session),
+        json={"name": "Bad", "price": 2000, "mrp": 1500, "status": "live"},
+    )
+    assert resp.status_code == 422
+
+
+def test_mrp_defaults_to_null(client: TestClient, db_session: Session) -> None:
+    resp = client.post(
+        "/admin/products",
+        headers=_admin_headers(db_session),
+        json={"name": "No Discount", "price": 999, "status": "live"},
+    )
+    assert resp.status_code == 201, resp.text
+    assert resp.json()["mrp"] is None
 
 
 def test_scheduled_requires_go_live_at(client: TestClient, db_session: Session) -> None:

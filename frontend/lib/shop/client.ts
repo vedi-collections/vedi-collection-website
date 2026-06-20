@@ -17,7 +17,8 @@ type ApiProduct = {
   id: string;
   name: string;
   description: string | null;
-  price: number; // whole rupees (INR)
+  price: number; // whole rupees (INR) — sale price
+  mrp: number | null; // whole rupees (INR) — original price; null when not discounted
   stock_quantity: number;
   images: string[];
   audience: ApiAudience;
@@ -59,7 +60,8 @@ function mapApiProduct(p: ApiProduct): Product {
     categorySlug: subcategory ? slugify(subcategory) : "all",
     colorFamilies: [],
     priceMinor: p.price * 100, // API stores whole rupees; storefront formats paise (/100)
-    mrpMinor: null,
+    // Only treat mrp as a real discount when it's above the sale price.
+    mrpMinor: p.mrp != null && p.mrp > p.price ? p.mrp * 100 : null,
     currency: "INR",
     tag: null,
     sizes: [],

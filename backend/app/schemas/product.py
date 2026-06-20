@@ -19,7 +19,10 @@ class ProductCreate(BaseModel):
 
     name: str = Field(min_length=1, max_length=512)
     description: str | None = None
-    price: int = Field(ge=0, description="Whole rupees (INR); no paise.")
+    price: int = Field(ge=0, description="Sale price the customer pays, whole rupees (INR).")
+    mrp: int | None = Field(
+        default=None, ge=0, description="Original price (MRP), whole rupees; null = no discount."
+    )
     stock_quantity: int = Field(default=0, ge=0)
     images: list[str] = Field(default_factory=list)
     audience: ProductAudience = ProductAudience.women
@@ -35,6 +38,12 @@ class ProductCreate(BaseModel):
             raise ValueError("go_live_at is required when status is 'scheduled'")
         return self
 
+    @model_validator(mode="after")
+    def _mrp_not_below_price(self) -> "ProductCreate":
+        if self.mrp is not None and self.mrp < self.price:
+            raise ValueError("mrp (original price) must be greater than or equal to price")
+        return self
+
 
 class ProductUpdate(BaseModel):
     """Partial update. Only fields explicitly sent are applied (exclude_unset)."""
@@ -42,6 +51,7 @@ class ProductUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=512)
     description: str | None = None
     price: int | None = Field(default=None, ge=0)
+    mrp: int | None = Field(default=None, ge=0)
     stock_quantity: int | None = Field(default=None, ge=0)
     images: list[str] | None = None
     audience: ProductAudience | None = None
@@ -59,6 +69,7 @@ class ProductAdmin(BaseModel):
     name: str
     description: str | None
     price: int
+    mrp: int | None
     stock_quantity: int
     images: list[str]
     audience: ProductAudience
@@ -79,6 +90,7 @@ class ProductPublic(BaseModel):
     name: str
     description: str | None
     price: int
+    mrp: int | None
     stock_quantity: int
     images: list[str]
     audience: ProductAudience
