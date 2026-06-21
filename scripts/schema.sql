@@ -13,6 +13,7 @@ CREATE TABLE products (
 	name VARCHAR(512) NOT NULL,
 	description TEXT,
 	price INTEGER NOT NULL,
+	mrp INTEGER,
 	stock_quantity INTEGER DEFAULT 0 NOT NULL,
 	images JSONB DEFAULT '[]'::jsonb NOT NULL,
 	audience product_audience DEFAULT 'women' NOT NULL,
