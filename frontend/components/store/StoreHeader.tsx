@@ -45,6 +45,16 @@ export function StoreHeader({ main, onMain, count, showCount, onOpenCart }: Stor
               href={waHelloLink()}
               target="_blank"
               rel="noreferrer"
+              aria-label="Chat with Vedi Collections on WhatsApp"
+              className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-full bg-whatsapp text-whatsapp-fg min-[900px]:hidden"
+            >
+              <WhatsAppIcon className="h-5 w-5" />
+            </a>
+
+            <a
+              href={waHelloLink()}
+              target="_blank"
+              rel="noreferrer"
               className="hidden h-10 items-center gap-2 rounded-full bg-whatsapp px-4 text-base font-bold text-whatsapp-fg min-[900px]:inline-flex"
             >
               <WhatsAppIcon className="h-[18px] w-[18px]" /> Chat with us
